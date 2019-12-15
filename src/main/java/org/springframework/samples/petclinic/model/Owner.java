@@ -15,11 +15,11 @@
  */
 package org.springframework.samples.petclinic.model;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,15 +30,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
-import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.rest.JacksonCustomOwnerDeserializer;
-import org.springframework.samples.petclinic.rest.JacksonCustomOwnerSerializer;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
+import org.springframework.samples.petclinic.rest.JacksonCustomOwnerDeserializer;
+import org.springframework.samples.petclinic.rest.JacksonCustomOwnerSerializer;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -106,8 +103,9 @@ public class Owner extends Person {
     }
 
     public List<Pet> getPets() {
-        List<Pet> sortedPets = new ArrayList<>(getPetsInternal());
-        PropertyComparator.sort(sortedPets, new MutableSortDefinition("name", true, true));
+        List<Pet> sortedPets = getPetsInternal().stream().sorted((a,b) -> {
+            return a.getName().compareToIgnoreCase(b.getName());
+        }).collect(Collectors.toList());
         return Collections.unmodifiableList(sortedPets);
     }
 
@@ -148,15 +146,13 @@ public class Owner extends Person {
 
     @Override
     public String toString() {
-        return new ToStringCreator(this)
-
-            .append("id", this.getId())
-            .append("new", this.isNew())
-            .append("lastName", this.getLastName())
-            .append("firstName", this.getFirstName())
-            .append("address", this.address)
-            .append("city", this.city)
-            .append("telephone", this.telephone)
-            .toString();
+        return  new StringBuilder()
+        .append("id : " + this.getId())
+        .append("new : " + this.isNew())
+        .append("lastName : " + this.getLastName())
+        .append("firstName : " + this.getFirstName())
+        .append("address : " + this.address)
+        .append("city : " + this.city)
+        .append("telephone : " + this.telephone).toString();
     }
 }

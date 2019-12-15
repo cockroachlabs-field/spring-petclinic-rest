@@ -21,3 +21,8 @@
 ## Steps
 
 1. Add Quarkus dependencies
+2. Replaced PropertyComparator and MutableSortDefinition by a Java Stream
+3. Replace Autowired by Inject
+4. 
+
+  
