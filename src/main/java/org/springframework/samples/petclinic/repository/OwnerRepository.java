@@ -16,10 +16,12 @@
 package org.springframework.samples.petclinic.repository;
 
 import java.util.Collection;
+import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Owner;
+
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
  * Repository class for <code>Owner</code> domain objects All method names are compliant with Spring Data naming
@@ -31,7 +33,7 @@ import org.springframework.samples.petclinic.model.Owner;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface OwnerRepository {
+public interface OwnerRepository extends PanacheRepository<Owner> {
 
     /**
      * Retrieve <code>Owner</code>s from the data store by last name, returning all owners whose last name <i>starts</i>
@@ -41,7 +43,7 @@ public interface OwnerRepository {
      * @return a <code>Collection</code> of matching <code>Owner</code>s (or an empty <code>Collection</code> if none
      * found)
      */
-    Collection<Owner> findByLastName(String lastName) throws DataAccessException;
+    Collection<Owner> findByLastName(String lastName) throws Exception;
 
     /**
      * Retrieve an <code>Owner</code> from the data store by id.
@@ -50,7 +52,7 @@ public interface OwnerRepository {
      * @return the <code>Owner</code> if found
      * @throws org.springframework.dao.DataRetrievalFailureException if not found
      */
-    Owner findById(int id) throws DataAccessException;
+    Owner findById(int id) throws Exception;
 
 
     /**
@@ -59,7 +61,7 @@ public interface OwnerRepository {
      * @param owner the <code>Owner</code> to save
      * @see BaseEntity#isNew
      */
-    void save(Owner owner) throws DataAccessException;
+    void save(Owner owner) throws Exception;
     
     /**
      * Retrieve <code>Owner</code>s from the data store, returning all owners 
@@ -67,7 +69,7 @@ public interface OwnerRepository {
      * @return a <code>Collection</code> of <code>Owner</code>s (or an empty <code>Collection</code> if none
      * found)
      */
-	Collection<Owner> findAll() throws DataAccessException;
+	List<Owner> listAll();
 	
     /**
      * Delete an <code>Owner</code> to the data store by <code>Owner</code>.
@@ -75,7 +77,7 @@ public interface OwnerRepository {
      * @param owner the <code>Owner</code> to delete
      * 
      */
-	void delete(Owner owner) throws DataAccessException;
+	void delete(Owner owner);
 
 
 }

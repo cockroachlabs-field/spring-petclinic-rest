@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.inject.Inject;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
@@ -39,7 +41,7 @@ import org.springframework.transaction.annotation.Transactional;
  * AbstractclinicServiceTests and its subclasses benefit from the following services provided by the Spring
  * TestContext Framework: </p> <ul> <li><strong>Spring IoC container caching</strong> which spares us unnecessary set up
  * time between test execution.</li> <li><strong>Dependency Injection</strong> of test fixture instances, meaning that
- * we don't need to perform application context lookups. See the use of {@link Autowired @Autowired} on the <code>{@link
+ * we don't need to perform application context lookups. See the use of {@link Autowired @Inject} on the <code>{@link
  * AbstractClinicServiceTests#clinicService clinicService}</code> instance variable, which uses autowiring <em>by
  * type</em>. <li><strong>Transaction management</strong>, meaning each test method is executed in its own transaction,
  * which is automatically rolled back by default. Thus, even if tests insert or otherwise change database state, there
@@ -55,7 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public abstract class AbstractClinicServiceTests {
 
-    @Autowired
+    @Inject
     protected ClinicService clinicService;
 
     @Test

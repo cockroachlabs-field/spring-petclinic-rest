@@ -20,10 +20,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,7 +38,6 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.OwnerRepository;
 import org.springframework.samples.petclinic.util.EntityUtils;
-import org.springframework.stereotype.Repository;
 
 /**
  * A simple JDBC-based implementation of the {@link OwnerRepository} interface.
@@ -52,7 +51,6 @@ import org.springframework.stereotype.Repository;
  * @author Antoine Rey
  * @author Vitaliy Fedoriv
  */
-@Repository
 @Profile("jdbc")
 public class JdbcOwnerRepositoryImpl implements OwnerRepository {
 
@@ -60,7 +58,7 @@ public class JdbcOwnerRepositoryImpl implements OwnerRepository {
 
     private SimpleJdbcInsert insertOwner;
 
-    @Autowired
+    @Inject
     public JdbcOwnerRepositoryImpl(DataSource dataSource) {
 
         this.insertOwner = new SimpleJdbcInsert(dataSource)

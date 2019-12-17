@@ -16,9 +16,9 @@
 
 package org.springframework.samples.petclinic.rest;
 
+import javax.inject.Inject;
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api/users")
 public class UserRestController {
 
-    @Autowired
+    @Inject
     private UserService userService;
 
     @PreAuthorize( "hasRole(@roles.ADMIN)" )

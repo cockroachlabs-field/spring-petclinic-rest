@@ -16,7 +16,6 @@
 
 package org.springframework.samples.petclinic.repository.springdatajpa;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;

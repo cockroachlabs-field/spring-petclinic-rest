@@ -17,8 +17,9 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.orm.ObjectRetrievalFailureException;
@@ -34,8 +35,7 @@ import org.springframework.samples.petclinic.repository.PetTypeRepository;
 import org.springframework.samples.petclinic.repository.SpecialtyRepository;
 import org.springframework.samples.petclinic.repository.VetRepository;
 import org.springframework.samples.petclinic.repository.VisitRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * Mostly used as a facade for all Petclinic controllers
@@ -44,8 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-@Service
-
+@Named
 public class ClinicServiceImpl implements ClinicService {
 
     private PetRepository petRepository;
@@ -55,7 +54,7 @@ public class ClinicServiceImpl implements ClinicService {
     private SpecialtyRepository specialtyRepository;
 	private PetTypeRepository petTypeRepository;
 
-    @Autowired
+    @Inject
      public ClinicServiceImpl(
        		 PetRepository petRepository,
     		 VetRepository vetRepository,
@@ -74,7 +73,7 @@ public class ClinicServiceImpl implements ClinicService {
 	@Override
 	@Transactional(readOnly = true)
 	public Collection<Pet> findAllPets() throws DataAccessException {
-		return petRepository.findAll();
+		return petRepository.listAll();
 	}
 
 	@Override

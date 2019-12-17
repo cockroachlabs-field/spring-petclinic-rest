@@ -1,19 +1,19 @@
 package org.springframework.samples.petclinic.service.userService;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 
 public abstract class AbstractUserServiceTests {
 
-    @Autowired
+    @Inject
     private UserService userService;
 
     @Before
