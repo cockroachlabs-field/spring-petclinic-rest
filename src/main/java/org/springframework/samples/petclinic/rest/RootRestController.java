@@ -19,22 +19,22 @@ package org.springframework.samples.petclinic.rest;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-@RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/")
+@Path("/")
 public class RootRestController {
 
-	@RequestMapping(value = "/")
+	@GET
+	@Path("/")
 	public void redirectToSwagger(HttpServletResponse response) throws IOException {
 		response.sendRedirect("/petclinic/swagger-ui.html");
 	}

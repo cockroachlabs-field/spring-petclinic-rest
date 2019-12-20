@@ -22,33 +22,37 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api/pettypes")
+@Path("api/pettypes")
 public class PetTypeRestController {
 
 	@Inject
 	private ClinicService clinicService;
 
     @PreAuthorize( "hasAnyRole(@roles.OWNER_ADMIN, @roles.VET_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GET
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<PetType>> getAllPetTypes(){
 		Collection<PetType> petTypes = new ArrayList<PetType>();
 		petTypes.addAll(this.clinicService.findAllPetTypes());
@@ -59,8 +63,10 @@ public class PetTypeRestController {
 	}
 
     @PreAuthorize( "hasAnyRole(@roles.OWNER_ADMIN, @roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{petTypeId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<PetType> getPetType(@PathVariable("petTypeId") int petTypeId){
+	@GET
+	@Path("/{petTypeId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseEntity<PetType> getPetType(@PathParam("petTypeId") int petTypeId){
 		PetType petType = this.clinicService.findPetTypeById(petTypeId);
 		if(petType == null){
 			return new ResponseEntity<PetType>(HttpStatus.NOT_FOUND);
@@ -69,7 +75,9 @@ public class PetTypeRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@POST
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<PetType> addPetType(@RequestBody @Valid PetType petType, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
@@ -84,8 +92,10 @@ public class PetTypeRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{petTypeId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<PetType> updatePetType(@PathVariable("petTypeId") int petTypeId, @RequestBody @Valid PetType petType, BindingResult bindingResult){
+	@PUT
+	@Path("/{petTypeId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseEntity<PetType> updatePetType(@PathParam("petTypeId") int petTypeId, @RequestBody @Valid PetType petType, BindingResult bindingResult){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
 		if(bindingResult.hasErrors() || (petType == null)){
@@ -103,9 +113,11 @@ public class PetTypeRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{petTypeId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@DELETE
+	@Path("/{petTypeId}")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ResponseEntity<Void> deletePetType(@PathVariable("petTypeId") int petTypeId){
+	public ResponseEntity<Void> deletePetType(@PathParam("petTypeId") int petTypeId){
 		PetType petType = this.clinicService.findPetTypeById(petTypeId);
 		if(petType == null){
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);

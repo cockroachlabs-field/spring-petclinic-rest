@@ -21,6 +21,13 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -31,11 +38,7 @@ import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -43,17 +46,18 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  */
 
-@RestController
-@CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("/api/owners")
+@CrossOrigin(exposedHeaders = "errors, content-type") //TODO
+@Path("/api/owners")
 public class OwnerRestController {
 
 	@Inject
 	private ClinicService clinicService;
 
-	@PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "/*/lastname/{lastName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Owner>> getOwnersList(@PathVariable("lastName") String ownerLastName) {
+	@PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" ) // TODO
+	@GET
+	@Path("/*/lastname/{lastName}")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Collection<Owner>> getOwnersList(@PathParam("lastName") String ownerLastName) {
 		if (ownerLastName == null) {
 			ownerLastName = "";
 		}
@@ -65,7 +69,9 @@ public class OwnerRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GET
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<Owner>> getOwners() {
 		Collection<Owner> owners = this.clinicService.findAllOwners();
 		if (owners.isEmpty()) {
@@ -75,8 +81,10 @@ public class OwnerRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Owner> getOwner(@PathVariable("ownerId") int ownerId) {
+	@GET
+	@Path("/{ownerId}")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Owner> getOwner(@PathParam("ownerId") int ownerId) {
 		Owner owner = null;
 		owner = this.clinicService.findOwnerById(ownerId);
 		if (owner == null) {
@@ -86,7 +94,9 @@ public class OwnerRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@POST
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
 			UriComponentsBuilder ucBuilder) {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
@@ -102,8 +112,10 @@ public class OwnerRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Owner> updateOwner(@PathVariable("ownerId") int ownerId, @RequestBody @Valid Owner owner,
+	@PUT
+	@Path("/{ownerId}")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public ResponseEntity<Owner> updateOwner(@PathParam("ownerId") int ownerId, @RequestBody @Valid Owner owner,
 			BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
@@ -126,9 +138,11 @@ public class OwnerRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-	@RequestMapping(value = "/{ownerId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@DELETE
+	@Path("/{ownerId}")
+	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@Transactional
-	public ResponseEntity<Void> deleteOwner(@PathVariable("ownerId") int ownerId) {
+	public ResponseEntity<Void> deleteOwner(@PathParam("ownerId") int ownerId) {
 		Owner owner = this.clinicService.findOwnerById(ownerId);
 		if (owner == null) {
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);

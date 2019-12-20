@@ -18,10 +18,13 @@ package org.springframework.samples.petclinic.rest;
 
 import javax.inject.Inject;
 import javax.validation.Valid;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
@@ -29,20 +32,18 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api/users")
+@Path("api/users")
 public class UserRestController {
 
     @Inject
     private UserService userService;
 
     @PreAuthorize( "hasRole(@roles.ADMIN)" )
-    @RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @POST
+    @Path("")
+    @Produces(MediaType.APPLICATION_JSON)
     public ResponseEntity<User> addOwner(@RequestBody @Valid User user,  BindingResult bindingResult) throws Exception {
         BindingErrorsResponse errors = new BindingErrorsResponse();
         HttpHeaders headers = new HttpHeaders();
