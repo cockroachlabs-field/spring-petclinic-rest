@@ -23,6 +23,11 @@
 1. Add Quarkus dependencies
 2. Replaced PropertyComparator and MutableSortDefinition by a Java Stream
 3. Replace Autowired by Inject
-4. 
+4. Removed @Profile and @Repository
+5. Repository interfaces implement PanacheRepository
+6. Rename findAll to listAll on repositories
+7. Changed return type for listAll
+8. Removed SpringApplication
+9. 
 
   
