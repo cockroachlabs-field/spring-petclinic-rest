@@ -28,10 +28,10 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -56,7 +56,7 @@ public class OwnerRestController {
 	@PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" ) // TODO
 	@GET
 	@Path("/*/lastname/{lastName}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<Owner>> getOwnersList(@PathParam("lastName") String ownerLastName) {
 		if (ownerLastName == null) {
 			ownerLastName = "";
@@ -71,7 +71,7 @@ public class OwnerRestController {
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<Owner>> getOwners() {
 		Collection<Owner> owners = this.clinicService.findAllOwners();
 		if (owners.isEmpty()) {
@@ -83,7 +83,7 @@ public class OwnerRestController {
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("/{ownerId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Owner> getOwner(@PathParam("ownerId") int ownerId) {
 		Owner owner = null;
 		owner = this.clinicService.findOwnerById(ownerId);
@@ -96,7 +96,7 @@ public class OwnerRestController {
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@POST
 	@Path("")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Owner> addOwner(@RequestBody @Valid Owner owner, BindingResult bindingResult,
 			UriComponentsBuilder ucBuilder) {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
@@ -114,7 +114,7 @@ public class OwnerRestController {
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@PUT
 	@Path("/{ownerId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Owner> updateOwner(@PathParam("ownerId") int ownerId, @RequestBody @Valid Owner owner,
 			BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
 		BindingErrorsResponse errors = new BindingErrorsResponse();
@@ -140,7 +140,7 @@ public class OwnerRestController {
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@DELETE
 	@Path("/{ownerId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public ResponseEntity<Void> deleteOwner(@PathParam("ownerId") int ownerId) {
 		Owner owner = this.clinicService.findOwnerById(ownerId);

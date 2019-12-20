@@ -21,10 +21,17 @@ import java.util.Collection;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
@@ -32,11 +39,7 @@ import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 /**
@@ -44,16 +47,17 @@ import org.springframework.web.util.UriComponentsBuilder;
  *
  */
 
-@RestController
 @CrossOrigin(exposedHeaders = "errors, content-type")
-@RequestMapping("api/vets")
+@Path("api/vets")
 public class VetRestController {
 
 	@Inject
 	private ClinicService clinicService;
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@GET
+	@Path("")
+	@Produces ( MediaType.APPLICATION_JSON)
 	public ResponseEntity<Collection<Vet>> getAllVets(){
 		Collection<Vet> vets = new ArrayList<Vet>();
 		vets.addAll(this.clinicService.findAllVets());
@@ -64,8 +68,10 @@ public class VetRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{vetId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Vet> getVet(@PathVariable("vetId") int vetId){
+	@GET
+	@Path("/{vetId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseEntity<Vet> getVet(@PathParam("vetId") int vetId){
 		Vet vet = this.clinicService.findVetById(vetId);
 		if(vet == null){
 			return new ResponseEntity<Vet>(HttpStatus.NOT_FOUND);
@@ -74,7 +80,9 @@ public class VetRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@POST
+	@Path("")
+	@Produces(MediaType.APPLICATION_JSON)
 	public ResponseEntity<Vet> addVet(@RequestBody @Valid Vet vet, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
@@ -89,8 +97,10 @@ public class VetRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{vetId}", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Vet> updateVet(@PathVariable("vetId") int vetId, @RequestBody @Valid Vet vet, BindingResult bindingResult){
+	@PUT
+	@Path("/{vetId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public ResponseEntity<Vet> updateVet(@PathParam("vetId") int vetId, @RequestBody @Valid Vet vet, BindingResult bindingResult){
 		BindingErrorsResponse errors = new BindingErrorsResponse();
 		HttpHeaders headers = new HttpHeaders();
 		if(bindingResult.hasErrors() || (vet == null)){
@@ -113,9 +123,11 @@ public class VetRestController {
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
-	@RequestMapping(value = "/{vetId}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@DELETE
+	@Path("/{vetId}")
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ResponseEntity<Void> deleteVet(@PathVariable("vetId") int vetId){
+	public ResponseEntity<Void> deleteVet(@PathParam("vetId") int vetId){
 		Vet vet = this.clinicService.findVetById(vetId);
 		if(vet == null){
 			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
