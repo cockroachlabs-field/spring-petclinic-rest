@@ -15,10 +15,11 @@
  */
 package org.springframework.samples.petclinic.repository;
 
-import java.util.Collection;
+import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Vet;
+
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
  * Repository class for <code>Vet</code> domain objects All method names are compliant with Spring Data naming
@@ -30,20 +31,20 @@ import org.springframework.samples.petclinic.model.Vet;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface VetRepository {
+public interface VetRepository extends PanacheRepository<Vet> {
 
     /**
      * Retrieve all <code>Vet</code>s from the data store.
      *
      * @return a <code>Collection</code> of <code>Vet</code>s
      */
-    Collection<Vet> findAll() throws DataAccessException;
+    List<Vet> listAll() ;
     
-	Vet findById(int id) throws DataAccessException;
+	Vet findById(int id) ;
 
-	void save(Vet vet) throws DataAccessException;
+	void save(Vet vet) ;
 	
-	void delete(Vet vet) throws DataAccessException;
+	void delete(Vet vet) ;
 
 
 }

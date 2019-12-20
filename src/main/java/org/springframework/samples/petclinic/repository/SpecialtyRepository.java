@@ -16,24 +16,25 @@
 
 package org.springframework.samples.petclinic.repository;
 
-import java.util.Collection;
+import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Specialty;
+
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-public interface SpecialtyRepository {
+public interface SpecialtyRepository extends PanacheRepository<Specialty>{
 	
-	Specialty findById(int id) throws DataAccessException;
+	Specialty findById(int id) ;
 	
-	Collection<Specialty> findAll() throws DataAccessException;
+	List<Specialty> listAll() ;
 	
-	void save(Specialty specialty) throws DataAccessException;
+	void save(Specialty specialty) ;
 	
-	void delete(Specialty specialty) throws DataAccessException;
+	void delete(Specialty specialty) ;
 
 }

@@ -15,12 +15,12 @@
  */
 package org.springframework.samples.petclinic.repository;
 
-import java.util.Collection;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Visit;
+
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
  * Repository class for <code>Visit</code> domain objects All method names are compliant with Spring Data naming
@@ -32,7 +32,7 @@ import org.springframework.samples.petclinic.model.Visit;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface VisitRepository {
+public interface VisitRepository extends PanacheRepository<Visit>{
 
     /**
      * Save a <code>Visit</code> to the data store, either inserting or updating it.
@@ -40,14 +40,14 @@ public interface VisitRepository {
      * @param visit the <code>Visit</code> to save
      * @see BaseEntity#isNew
      */
-    void save(Visit visit) throws DataAccessException;
+    void save(Visit visit) ;
 
     List<Visit> findByPetId(Integer petId);
     
-	Visit findById(int id) throws DataAccessException;
+	Visit findById(int id) ;
 	
-	Collection<Visit> findAll() throws DataAccessException;
+	List<Visit> listAll() ;
 
-	void delete(Visit visit) throws DataAccessException;
+	void delete(Visit visit) ;
 
 }
