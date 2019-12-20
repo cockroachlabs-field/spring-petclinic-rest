@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.repository.jpa;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -34,7 +33,6 @@ import org.springframework.samples.petclinic.repository.PetRepository;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-@Profile("jpa")
 public class JpaPetRepositoryImpl implements PetRepository {
 
     @PersistenceContext

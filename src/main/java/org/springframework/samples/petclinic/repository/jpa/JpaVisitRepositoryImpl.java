@@ -39,8 +39,6 @@ import org.springframework.stereotype.Repository;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-@Repository
-@Profile("jpa")
 public class JpaVisitRepositoryImpl implements VisitRepository {
 
     @PersistenceContext
@@ -72,7 +70,7 @@ public class JpaVisitRepositoryImpl implements VisitRepository {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<Visit> findAll() throws DataAccessException {
+	public List<Visit> listAll() throws DataAccessException {
         return this.em.createQuery("SELECT v FROM Visit v").getResultList();
 	}
 

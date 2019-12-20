@@ -22,21 +22,16 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import org.springframework.context.annotation.Profile;
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.PetTypeRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-@Repository
-@Profile("jpa")
 public class JpaPetTypeRepositoryImpl implements PetTypeRepository {
 	
     @PersistenceContext
@@ -49,12 +44,12 @@ public class JpaPetTypeRepositoryImpl implements PetTypeRepository {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Collection<PetType> findAll() throws DataAccessException {
+	public List<PetType> listAll()  {
 		return this.em.createQuery("SELECT ptype FROM PetType ptype").getResultList();
 	}
 
 	@Override
-	public void save(PetType petType) throws DataAccessException {
+	public void save(PetType petType)  {
 		if (petType.getId() == null) {
             this.em.persist(petType);
         } else {
@@ -65,7 +60,7 @@ public class JpaPetTypeRepositoryImpl implements PetTypeRepository {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void delete(PetType petType) throws DataAccessException {
+	public void delete(PetType petType)  {
 		this.em.remove(this.em.contains(petType) ? petType : this.em.merge(petType));
 		Integer petTypeId = petType.getId();
 		
