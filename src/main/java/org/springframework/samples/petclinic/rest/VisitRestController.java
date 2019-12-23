@@ -18,10 +18,14 @@ package org.springframework.samples.petclinic.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,18 +33,14 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author Vitaliy Fedoriv
@@ -54,69 +54,66 @@ public class VisitRestController {
 	@Inject
 	private ClinicService clinicService;
 
+	@Inject
+	private Validator validator;
+
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Collection<Visit>> getAllVisits(){
+	public Response getAllVisits(){
 		Collection<Visit> visits = new ArrayList<Visit>();
 		visits.addAll(this.clinicService.findAllVisits());
 		if (visits.isEmpty()){
-			return new ResponseEntity<Collection<Visit>>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Collection<Visit>>(visits, HttpStatus.OK);
+		return Response.ok(visits).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Visit> getVisit(@PathParam("visitId") int visitId){
+	public Response getVisit(@PathParam("visitId") int visitId){
 		Visit visit = this.clinicService.findVisitById(visitId);
 		if(visit == null){
-			return new ResponseEntity<Visit>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Visit>(visit, HttpStatus.OK);
+		return Response.ok(visit).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Visit> addVisit(@RequestBody @Valid Visit visit, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (visit == null) || (visit.getPet() == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Visit>(headers, HttpStatus.BAD_REQUEST);
+	public Response addVisit(@Valid Visit visit) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
+		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
+		if (!errors.isEmpty() || (visit == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(visit).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		this.clinicService.saveVisit(visit);
-		headers.setLocation(ucBuilder.path("/api/visits/{id}").buildAndExpand(visit.getId()).toUri());
-		return new ResponseEntity<Visit>(visit, headers, HttpStatus.CREATED);
+		// headers.setLocation(ucBuilder.path("/api/visits/{id}").buildAndExpand(visit.getId()).toUri()); // TODO
+		return Response.status(Status.CREATED).entity(visit).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@PUT
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public ResponseEntity<Visit> updateVisit(@PathParam("visitId") int visitId, @RequestBody @Valid Visit visit, BindingResult bindingResult){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (visit == null) || (visit.getPet() == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Visit>(headers, HttpStatus.BAD_REQUEST);
+	public Response updateVisit(@PathParam("visitId") int visitId, @Valid Visit visit) { //}, BindingResult bindingResult){
+		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
+		if (!errors.isEmpty() || (visit == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(visit).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		Visit currentVisit = this.clinicService.findVisitById(visitId);
 		if(currentVisit == null){
-			return new ResponseEntity<Visit>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		currentVisit.setDate(visit.getDate());
 		currentVisit.setDescription(visit.getDescription());
 		currentVisit.setPet(visit.getPet());
 		this.clinicService.saveVisit(currentVisit);
-		return new ResponseEntity<Visit>(currentVisit, HttpStatus.NO_CONTENT);
+		return Response.noContent().entity(currentVisit).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
@@ -124,13 +121,13 @@ public class VisitRestController {
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@Transactional
-	public ResponseEntity<Void> deleteVisit(@PathParam("visitId") int visitId){
+	public Response deleteVisit(@PathParam("visitId") int visitId){
 		Visit visit = this.clinicService.findVisitById(visitId);
 		if(visit == null){
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		this.clinicService.deleteVisit(visit);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return Response.noContent().build();
 	}
 
 }

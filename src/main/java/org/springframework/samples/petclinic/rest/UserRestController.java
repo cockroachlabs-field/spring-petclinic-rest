@@ -16,22 +16,24 @@
 
 package org.springframework.samples.petclinic.rest;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @CrossOrigin(exposedHeaders = "errors, content-type")
 @Path("api/users")
@@ -40,20 +42,20 @@ public class UserRestController {
     @Inject
     private UserService userService;
 
+    @Inject
+    private Validator validator;
+    
     @PreAuthorize( "hasRole(@roles.ADMIN)" )
     @POST
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    public ResponseEntity<User> addOwner(@RequestBody @Valid User user,  BindingResult bindingResult) throws Exception {
-        BindingErrorsResponse errors = new BindingErrorsResponse();
-        HttpHeaders headers = new HttpHeaders();
-        if (bindingResult.hasErrors() || (user == null)) {
-            errors.addAllErrors(bindingResult);
-            headers.add("errors", errors.toJSON());
-            return new ResponseEntity<User>(user, headers, HttpStatus.BAD_REQUEST);
-        }
+    public Response addOwner( @Valid User user) throws Exception { // }, BindingResult bindingResult) throws Exception {
+		Set<ConstraintViolation<User>> errors = validator.validate(user);
+		if (!errors.isEmpty() || (user == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(user).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
+		}
 
-        this.userService.saveUser(user);
-        return new ResponseEntity<User>(user, headers, HttpStatus.CREATED);
+        userService.saveUser(user);
+        return Response.status(Status.CREATED).entity(user).build();
     }
 }

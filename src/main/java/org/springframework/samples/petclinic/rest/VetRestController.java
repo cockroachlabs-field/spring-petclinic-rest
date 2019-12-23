@@ -17,10 +17,14 @@ package org.springframework.samples.petclinic.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,18 +33,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author Vitaliy Fedoriv
@@ -54,63 +54,60 @@ public class VetRestController {
 	@Inject
 	private ClinicService clinicService;
 
+	@Inject
+	private Validator validator;
+
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
 	@GET
 	@Path("")
 	@Produces ( MediaType.APPLICATION_JSON)
-	public ResponseEntity<Collection<Vet>> getAllVets(){
+	public Response getAllVets(){
 		Collection<Vet> vets = new ArrayList<Vet>();
 		vets.addAll(this.clinicService.findAllVets());
 		if (vets.isEmpty()){
-			return new ResponseEntity<Collection<Vet>>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Collection<Vet>>(vets, HttpStatus.OK);
+		return Response.ok(vets).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
 	@GET
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Vet> getVet(@PathParam("vetId") int vetId){
+	public Response getVet(@PathParam("vetId") int vetId){
 		Vet vet = this.clinicService.findVetById(vetId);
 		if(vet == null){
-			return new ResponseEntity<Vet>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Vet>(vet, HttpStatus.OK);
+		return Response.ok(vet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Vet> addVet(@RequestBody @Valid Vet vet, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (vet == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Vet>(headers, HttpStatus.BAD_REQUEST);
+	public Response addVet(@Valid Vet vet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
+		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
+		if (!errors.isEmpty() || (vet == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(vet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		this.clinicService.saveVet(vet);
-		headers.setLocation(ucBuilder.path("/api/vets/{id}").buildAndExpand(vet.getId()).toUri());
-		return new ResponseEntity<Vet>(vet, headers, HttpStatus.CREATED);
+		// headers.setLocation(ucBuilder.path("/api/vets/{id}").buildAndExpand(vet.getId()).toUri()); //TODO
+		return Response.status(Status.CREATED).entity(vet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
 	@PUT
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Vet> updateVet(@PathParam("vetId") int vetId, @RequestBody @Valid Vet vet, BindingResult bindingResult){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (vet == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Vet>(headers, HttpStatus.BAD_REQUEST);
+	public Response updateVet(@PathParam("vetId") int vetId, @Valid Vet vet) { //}, BindingResult bindingResult){
+		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
+		if (!errors.isEmpty() || (vet == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(vet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		Vet currentVet = this.clinicService.findVetById(vetId);
 		if(currentVet == null){
-			return new ResponseEntity<Vet>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		currentVet.setFirstName(vet.getFirstName());
 		currentVet.setLastName(vet.getLastName());
@@ -119,7 +116,7 @@ public class VetRestController {
 			currentVet.addSpecialty(spec);
 		}
 		this.clinicService.saveVet(currentVet);
-		return new ResponseEntity<Vet>(currentVet, HttpStatus.NO_CONTENT);
+		return Response.noContent().entity(currentVet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
@@ -127,13 +124,13 @@ public class VetRestController {
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
-	public ResponseEntity<Void> deleteVet(@PathParam("vetId") int vetId){
+	public Response deleteVet(@PathParam("vetId") int vetId){
 		Vet vet = this.clinicService.findVetById(vetId);
 		if(vet == null){
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		this.clinicService.deleteVet(vet);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return Response.noContent().build();
 	}
 
 

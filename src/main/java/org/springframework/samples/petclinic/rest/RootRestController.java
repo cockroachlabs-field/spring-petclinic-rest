@@ -17,10 +17,12 @@
 package org.springframework.samples.petclinic.rest;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -35,8 +37,8 @@ public class RootRestController {
 
 	@GET
 	@Path("/")
-	public void redirectToSwagger(HttpServletResponse response) throws IOException {
-		response.sendRedirect("/petclinic/swagger-ui.html");
+	public Response redirectToSwagger() throws IOException, URISyntaxException {
+		return Response.temporaryRedirect(new URI("/petclinic/swagger-ui.html")).build();
 	}
 
 }

@@ -17,10 +17,14 @@
 package org.springframework.samples.petclinic.rest;
 
 import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
+import javax.validation.Validator;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -29,19 +33,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * @author Vitaliy Fedoriv
@@ -55,77 +53,74 @@ public class PetRestController {
 	@Inject
 	private ClinicService clinicService;
 
+	@Inject
+	private Validator validator;
+
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("/{petId}")
 	@Produces( MediaType.APPLICATION_JSON)
-	public ResponseEntity<Pet> getPet(@PathParam("petId") int petId){
+	public Response getPet(@PathParam("petId") int petId){
 		Pet pet = this.clinicService.findPetById(petId);
 		if(pet == null){
-			return new ResponseEntity<Pet>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Pet>(pet, HttpStatus.OK);
+		return Response.ok(pet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Collection<Pet>> getPets(){
+	public Response getPets(){
 		Collection<Pet> pets = this.clinicService.findAllPets();
 		if(pets.isEmpty()){
-			return new ResponseEntity<Collection<Pet>>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
-		return new ResponseEntity<Collection<Pet>>(pets, HttpStatus.OK);
+		return Response.ok(pets).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@GET
 	@Path("/pettypes")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Collection<PetType>> getPetTypes(){
-		return new ResponseEntity<Collection<PetType>>(this.clinicService.findPetTypes(), HttpStatus.OK);
+	public Response getPetTypes(){
+		return Response.ok(this.clinicService.findPetTypes()).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@POST
 	@Path( "")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Pet> addPet(@RequestBody @Valid Pet pet, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (pet == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Pet>(headers, HttpStatus.BAD_REQUEST);
+	public Response addPet(@Valid Pet pet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
+		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
+		if (!errors.isEmpty() || (pet == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		this.clinicService.savePet(pet);
-		headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri());
-		return new ResponseEntity<Pet>(pet, headers, HttpStatus.CREATED);
+		// headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri()); //TODO
+		return Response.status(Status.CREATED).entity(pet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
 	@PUT
 	@Path("/{petId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public ResponseEntity<Pet> updatePet(@PathVariable("petId") int petId, @RequestBody @Valid Pet pet, BindingResult bindingResult){
-		BindingErrorsResponse errors = new BindingErrorsResponse();
-		HttpHeaders headers = new HttpHeaders();
-		if(bindingResult.hasErrors() || (pet == null)){
-			errors.addAllErrors(bindingResult);
-			headers.add("errors", errors.toJSON());
-			return new ResponseEntity<Pet>(headers, HttpStatus.BAD_REQUEST);
+	public Response updatePet(@PathParam("petId") int petId, @Valid Pet pet) { //, BindingResult bindingResult){
+		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
+		if (!errors.isEmpty() || (pet == null)) {
+			return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
 		Pet currentPet = this.clinicService.findPetById(petId);
 		if(currentPet == null){
-			return new ResponseEntity<Pet>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		currentPet.setBirthDate(pet.getBirthDate());
 		currentPet.setName(pet.getName());
 		currentPet.setType(pet.getType());
 		currentPet.setOwner(pet.getOwner());
 		this.clinicService.savePet(currentPet);
-		return new ResponseEntity<Pet>(currentPet, HttpStatus.NO_CONTENT);
+		return Response.noContent().entity(currentPet).build();
 	}
 
     @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
@@ -133,13 +128,13 @@ public class PetRestController {
 	@Path("/{petId}")
 	@Produces (MediaType.APPLICATION_JSON)
 	@Transactional
-	public ResponseEntity<Void> deletePet(@PathVariable("petId") int petId){
+	public Response deletePet(@PathParam("petId") int petId){
 		Pet pet = this.clinicService.findPetById(petId);
 		if(pet == null){
-			return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+			return Response.status(Status.NOT_FOUND).build();
 		}
 		this.clinicService.deletePet(pet);
-		return new ResponseEntity<Void>(HttpStatus.NO_CONTENT);
+		return Response.noContent().build();
 	}
 
 
