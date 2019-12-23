@@ -7,16 +7,13 @@
    2. cache
    3. data-jpa
    4. web
-   5. thymeleaf
-   6. test
-   7. devtools
+   5. test
+   6. devtools
 2. hsqldb
 3. mysql
 4. cache-api
 5. ehcache
-6. jquery
-7. jquery-ui
-8. bootstrap
+
 
 ## Steps
 
@@ -28,6 +25,14 @@
 6. Rename findAll to listAll on repositories
 7. Changed return type for listAll
 8. Removed SpringApplication
-9. 
+9. Changing @RestController, @RequestMapping, @PathVariable -> @Path , @GET,@POST,@PUT,@DELETE, @PathParam, @Produces
+10. Changing ResponseEntity by Response.entity
+11. Changing BindingResult by ConstraintValidation
 
+## TODO
+
+1. Security in Controllers :  @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+2. Transactional
+3. JDBC repositories
+4. CROSS Origin 
   
