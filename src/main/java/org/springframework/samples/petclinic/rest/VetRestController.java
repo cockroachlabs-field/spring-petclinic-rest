@@ -41,14 +41,12 @@ import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-@CrossOrigin(exposedHeaders = "errors, content-type")
 @Path("api/vets")
 public class VetRestController {
 

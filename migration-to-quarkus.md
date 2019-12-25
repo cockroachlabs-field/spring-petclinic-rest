@@ -32,11 +32,14 @@
 13. Addded ApplicationScoped to repository implemented class
 14. Added REST Security through @RolesAllowed
 15. Replaced hard coded roles with Roles constants
+16. CORS configured on application.properties file 
 
 ## TODO
 
-1. Security in Controllers :  @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
-2. Transactional
-3. JDBC repositories
-4. CROSS Origin 
+1. Transactional
+2. CROSS Origin 
   
+## NOT MIGRATED
+
+1. JDBC repositories
+2. Spring Data repositories

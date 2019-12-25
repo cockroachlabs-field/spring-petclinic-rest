@@ -24,14 +24,11 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
-
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-@CrossOrigin(exposedHeaders = "errors, content-type")
 @Path("/")
 public class RootRestController {
 

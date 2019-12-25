@@ -34,9 +34,7 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.UserService;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(exposedHeaders = "errors, content-type")
 @Path("api/users")
 public class UserRestController {
 
