@@ -28,6 +28,8 @@
 9. Changing @RestController, @RequestMapping, @PathVariable -> @Path , @GET,@POST,@PUT,@DELETE, @PathParam, @Produces
 10. Changing ResponseEntity by Response.entity
 11. Changing BindingResult by ConstraintValidation
+12. Removed JDBC repositories
+13. Addded ApplicationScoped to repository implemented class
 
 ## TODO
 

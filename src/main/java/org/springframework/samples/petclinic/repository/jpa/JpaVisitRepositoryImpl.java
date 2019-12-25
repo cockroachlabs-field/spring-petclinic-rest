@@ -15,18 +15,16 @@
  */
 package org.springframework.samples.petclinic.repository.jpa;
 
-import java.util.Collection;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.VisitRepository;
-import org.springframework.stereotype.Repository;
 
 /**
  * JPA implementation of the ClinicService interface using EntityManager.
@@ -39,6 +37,7 @@ import org.springframework.stereotype.Repository;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
+@ApplicationScoped
 public class JpaVisitRepositoryImpl implements VisitRepository {
 
     @PersistenceContext

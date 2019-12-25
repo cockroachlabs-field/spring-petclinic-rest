@@ -16,9 +16,9 @@
 
 package org.springframework.samples.petclinic.repository.jpa;
 
-import java.util.Collection;
 import java.util.List;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -31,7 +31,7 @@ import org.springframework.samples.petclinic.repository.PetTypeRepository;
  * @author Vitaliy Fedoriv
  *
  */
-
+@ApplicationScoped
 public class JpaPetTypeRepositoryImpl implements PetTypeRepository {
 	
     @PersistenceContext
