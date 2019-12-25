@@ -37,7 +37,8 @@
 ## TODO
 
 1. Transactional
-2. CROSS Origin 
+2. Cache
+3. Test
   
 ## NOT MIGRATED
 
