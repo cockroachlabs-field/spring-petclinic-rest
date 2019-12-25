@@ -30,6 +30,8 @@
 11. Changing BindingResult by ConstraintValidation
 12. Removed JDBC repositories
 13. Addded ApplicationScoped to repository implemented class
+14. Added REST Security through @RolesAllowed
+15. Replaced hard coded roles with Roles constants
 
 ## TODO
 

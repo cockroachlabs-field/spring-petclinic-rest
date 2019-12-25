@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -123,7 +124,7 @@ public class PetRestController {
 		return Response.noContent().entity(currentPet).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN ) 
 	@DELETE
 	@Path("/{petId}")
 	@Produces (MediaType.APPLICATION_JSON)

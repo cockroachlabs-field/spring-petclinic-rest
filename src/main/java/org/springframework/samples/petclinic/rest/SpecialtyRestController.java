@@ -39,6 +39,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -57,7 +58,7 @@ public class SpecialtyRestController {
 	@Inject
 	private Validator validator;
 
-	@RolesAllowed("VET_ADMIN") 
+	@RolesAllowed(Roles.VET_ADMIN) 
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -70,7 +71,7 @@ public class SpecialtyRestController {
 		return Response.ok(specialties).build();
 	}
 
-	@RolesAllowed("VET_ADMIN") 
+	@RolesAllowed(Roles.VET_ADMIN) 
 	@GET
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -82,7 +83,7 @@ public class SpecialtyRestController {
 		return Response.ok(specialty).build();
 	}
 
-	@RolesAllowed("VET_ADMIN") 
+	@RolesAllowed(Roles.VET_ADMIN) 
 	@POST
 	@Path("")
 	@Produces( MediaType.APPLICATION_JSON)
@@ -96,7 +97,7 @@ public class SpecialtyRestController {
 		return Response.status(Status.CREATED).entity(specialty).build();
 	}
 
-	@RolesAllowed("VET_ADMIN") 
+	@RolesAllowed(Roles.VET_ADMIN) 
 	@PUT
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -114,7 +115,7 @@ public class SpecialtyRestController {
 		return Response.noContent().entity(currentSpecialty).build();
 	}
 
-	@RolesAllowed("VET_ADMIN") 
+	@RolesAllowed(Roles.VET_ADMIN) 
 	@DELETE
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
