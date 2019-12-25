@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.Cacheable;
@@ -45,7 +46,7 @@ import org.springframework.samples.petclinic.repository.VisitRepository;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-@Named
+@ApplicationScoped
 public class ClinicServiceImpl implements ClinicService {
 
     private PetRepository petRepository;
@@ -247,7 +248,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public void savePet(Pet pet)  {
+	public void savePet(Pet pet) throws Exception {
 		petRepository.save(pet);
 		
 	}
@@ -268,7 +269,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public void saveOwner(Owner owner)  {
+	public void saveOwner(Owner owner) throws Exception {
 		ownerRepository.save(owner);
 		
 	}

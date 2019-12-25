@@ -1,8 +1,8 @@
 package org.springframework.samples.petclinic.security;
 
-import org.springframework.stereotype.Component;
+import javax.enterprise.context.ApplicationScoped;
 
-@Component
+@ApplicationScoped
 public class Roles {
 
     public final String OWNER_ADMIN = "ROLE_OWNER_ADMIN";
