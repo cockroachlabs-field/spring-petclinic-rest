@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -39,7 +40,6 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
@@ -57,7 +57,7 @@ public class VetRestController {
 	@Inject
 	private Validator validator;
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@GET
 	@Path("")
 	@Produces ( MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ public class VetRestController {
 		return Response.ok(vets).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@GET
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -82,7 +82,7 @@ public class VetRestController {
 		return Response.ok(vet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ public class VetRestController {
 		return Response.status(Status.CREATED).entity(vet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@PUT
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -119,7 +119,7 @@ public class VetRestController {
 		return Response.noContent().entity(currentVet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@DELETE
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)

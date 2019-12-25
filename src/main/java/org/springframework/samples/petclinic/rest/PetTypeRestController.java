@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -39,7 +40,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -53,7 +53,7 @@ public class PetTypeRestController {
 	@Inject
 	private Validator validator;
 
-    @PreAuthorize( "hasAnyRole(@roles.OWNER_ADMIN, @roles.VET_ADMIN)" )
+	@RolesAllowed( {"OWNER_ADMIN", "VET_ADMIN" }) 
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -66,7 +66,7 @@ public class PetTypeRestController {
 		return Response.ok(petTypes).build();
 	}
 
-    @PreAuthorize( "hasAnyRole(@roles.OWNER_ADMIN, @roles.VET_ADMIN)" )
+	@RolesAllowed( {"OWNER_ADMIN", "VET_ADMIN" }) 
 	@GET
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -78,7 +78,7 @@ public class PetTypeRestController {
 		return Response.ok(petType).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -92,7 +92,7 @@ public class PetTypeRestController {
 		return Response.status(Status.CREATED).entity(petType).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@PUT
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ public class PetTypeRestController {
 		return Response.noContent().entity(currentPetType).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.VET_ADMIN)" )
+	@RolesAllowed("VET_ADMIN") 
 	@DELETE
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)

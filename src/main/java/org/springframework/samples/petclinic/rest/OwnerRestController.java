@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -56,7 +57,7 @@ public class OwnerRestController {
 	@Inject
 	private Validator validator;
 
-	@PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" ) // TODO
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("/*/lastname/{lastName}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -71,7 +72,7 @@ public class OwnerRestController {
 		return Response.ok(owners).status(Status.OK).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -83,7 +84,7 @@ public class OwnerRestController {
 		return Response.ok(owners).status(Status.OK).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -96,7 +97,7 @@ public class OwnerRestController {
 		return Response.ok(owner).status(Status.OK).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -110,7 +111,7 @@ public class OwnerRestController {
 		return Response.ok(owner).status(Status.CREATED).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@PUT
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -132,7 +133,7 @@ public class OwnerRestController {
 		return Response.status(Status.NO_CONTENT).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@DELETE
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)

@@ -19,6 +19,7 @@ package org.springframework.samples.petclinic.rest;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
@@ -32,7 +33,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(exposedHeaders = "errors, content-type")
@@ -45,7 +45,7 @@ public class UserRestController {
     @Inject
     private Validator validator;
     
-    @PreAuthorize( "hasRole(@roles.ADMIN)" )
+	@RolesAllowed("ADMIN") 
     @POST
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)

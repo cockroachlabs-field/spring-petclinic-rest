@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -39,7 +40,6 @@ import javax.ws.rs.core.Response.Status;
 import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
@@ -57,7 +57,7 @@ public class VisitRestController {
 	@Inject
 	private Validator validator;
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed("OWNER_ADMIN") 
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -70,7 +70,7 @@ public class VisitRestController {
 		return Response.ok(visits).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed("OWNER_ADMIN") 
 	@GET
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -82,7 +82,7 @@ public class VisitRestController {
 		return Response.ok(visit).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed("OWNER_ADMIN") 
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -96,7 +96,7 @@ public class VisitRestController {
 		return Response.status(Status.CREATED).entity(visit).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed("OWNER_ADMIN") 
 	@PUT
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -116,7 +116,7 @@ public class VisitRestController {
 		return Response.noContent().entity(currentVisit).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed("OWNER_ADMIN") 
 	@DELETE
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)

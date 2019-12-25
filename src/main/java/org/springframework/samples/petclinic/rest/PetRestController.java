@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
@@ -38,7 +39,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
@@ -56,7 +56,7 @@ public class PetRestController {
 	@Inject
 	private Validator validator;
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("/{petId}")
 	@Produces( MediaType.APPLICATION_JSON)
@@ -68,7 +68,7 @@ public class PetRestController {
 		return Response.ok(pet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -80,7 +80,7 @@ public class PetRestController {
 		return Response.ok(pets).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET
 	@Path("/pettypes")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -88,7 +88,7 @@ public class PetRestController {
 		return Response.ok(this.clinicService.findPetTypes()).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@POST
 	@Path( "")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -102,7 +102,7 @@ public class PetRestController {
 		return Response.status(Status.CREATED).entity(pet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@PUT
 	@Path("/{petId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -123,7 +123,7 @@ public class PetRestController {
 		return Response.noContent().entity(currentPet).build();
 	}
 
-    @PreAuthorize( "hasRole(@roles.OWNER_ADMIN)" )
+	@RolesAllowed( "OWNER_ADMIN" ) 
 	@DELETE
 	@Path("/{petId}")
 	@Produces (MediaType.APPLICATION_JSON)
