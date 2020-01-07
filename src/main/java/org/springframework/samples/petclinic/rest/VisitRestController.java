@@ -36,8 +36,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.MediaType;
 
-import org.springframework.http.MediaType;
+
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -59,7 +60,7 @@ public class VisitRestController {
 	@RolesAllowed(Roles.OWNER_ADMIN) 
 	@GET
 	@Path("")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllVisits(){
 		Collection<Visit> visits = new ArrayList<Visit>();
 		visits.addAll(this.clinicService.findAllVisits());
@@ -72,7 +73,7 @@ public class VisitRestController {
 	@RolesAllowed(Roles.OWNER_ADMIN) 
 	@GET
 	@Path("/{visitId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response getVisit(@PathParam("visitId") int visitId){
 		Visit visit = this.clinicService.findVisitById(visitId);
 		if(visit == null){
@@ -84,7 +85,7 @@ public class VisitRestController {
 	@RolesAllowed(Roles.OWNER_ADMIN) 
 	@POST
 	@Path("")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response addVisit(@Valid Visit visit) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
 		if (!errors.isEmpty() || (visit == null)) {
@@ -98,7 +99,7 @@ public class VisitRestController {
 	@RolesAllowed(Roles.OWNER_ADMIN) 
 	@PUT
 	@Path("/{visitId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateVisit(@PathParam("visitId") int visitId, @Valid Visit visit) { //}, BindingResult bindingResult){
 		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
 		if (!errors.isEmpty() || (visit == null)) {
@@ -118,7 +119,7 @@ public class VisitRestController {
 	@RolesAllowed(Roles.OWNER_ADMIN) 
 	@DELETE
 	@Path("/{visitId}")
-	@Produces(MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@Produces(MediaType.APPLICATION_JSON)
 	@Transactional
 	public Response deleteVisit(@PathParam("visitId") int visitId){
 		Visit visit = this.clinicService.findVisitById(visitId);

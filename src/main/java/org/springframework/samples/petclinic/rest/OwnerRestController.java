@@ -39,15 +39,12 @@ import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 
-@CrossOrigin(exposedHeaders = "errors, content-type") //TODO
 @Path("/api/owners")
 public class OwnerRestController {
 
