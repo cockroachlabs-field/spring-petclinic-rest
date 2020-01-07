@@ -22,7 +22,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.repository.VisitRepository;
 
@@ -63,18 +62,18 @@ public class JpaVisitRepositoryImpl implements VisitRepository {
     }
     
 	@Override
-	public Visit findById(int id) throws DataAccessException {
+	public Visit findById(int id)  {
 		return this.em.find(Visit.class, id);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Visit> listAll() throws DataAccessException {
+	public List<Visit> listAll()  {
         return this.em.createQuery("SELECT v FROM Visit v").getResultList();
 	}
 
 	@Override
-	public void delete(Visit visit) throws DataAccessException {
+	public void delete(Visit visit)  {
         this.em.remove(this.em.contains(visit) ? visit : this.em.merge(visit));
 	}
 

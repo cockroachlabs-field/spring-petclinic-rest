@@ -18,7 +18,6 @@ package org.springframework.samples.petclinic.repository;
 
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.samples.petclinic.model.PetType;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -30,12 +29,12 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 public interface PetTypeRepository extends PanacheRepository<PetType>{
 	
-	PetType findById(int id) throws DataAccessException;
+	PetType findById(int id);
 	
-	List<PetType> listAll() throws DataAccessException;
+	List<PetType> listAll();
 
-	void save(PetType petType) throws DataAccessException;
+	void save(PetType petType);
 	
-	void delete(PetType petType) throws DataAccessException;
+	void delete(PetType petType);
 
 }

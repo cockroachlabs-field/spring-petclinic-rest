@@ -33,6 +33,7 @@
 14. Added REST Security through @RolesAllowed
 15. Replaced hard coded roles with Roles constants
 16. CORS configured on application.properties file 
+17. Removed DataAccessException throw clause
 
 ## TODO
 
