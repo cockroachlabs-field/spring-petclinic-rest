@@ -32,17 +32,18 @@
 13. Addded ApplicationScoped to repository implemented class
 14. Added REST Security through @RolesAllowed
 15. Replaced hard coded roles with Roles constants
-16. CORS configured on application.properties file 
+16. CORS configured on application.properties file
 17. Removed DataAccessException throw clause
 18. Removed 2 levels repository implementation *Repository + * RepositoryImpl -> *Repository
-19. 
+19. Moved to JUnit 5
 
 ## TODO
 
-1. Transactional
-2. Cache
-3. Test
-4. AspectJ
+1. Cache
+2. Test
+3. AspectJ
+4. ControllerAdvice
+5. Swagger
   
 ## NOT MIGRATED
 
