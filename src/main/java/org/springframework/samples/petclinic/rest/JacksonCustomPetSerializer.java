@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class JacksonCustomPetSerializer extends StdSerializer<Pet> {
 
+	private static final long serialVersionUID = -1330981868613439174L;
+
 	public JacksonCustomPetSerializer() {
 		this(null);
 	}

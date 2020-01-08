@@ -38,6 +38,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 public class JacksonCustomVisitDeserializer extends StdDeserializer<Visit> {
 
+	private static final long serialVersionUID = 7143210834179392901L;
+
 	public JacksonCustomVisitDeserializer() {
 		this(null);
 	}

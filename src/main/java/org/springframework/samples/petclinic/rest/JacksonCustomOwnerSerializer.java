@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class JacksonCustomOwnerSerializer extends StdSerializer<Owner> {
 
+	private static final long serialVersionUID = -3850080244715054625L;
+
 	public JacksonCustomOwnerSerializer() {
 		this(null);
 	}
