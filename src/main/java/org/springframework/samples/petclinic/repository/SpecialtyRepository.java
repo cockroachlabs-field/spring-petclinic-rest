@@ -16,7 +16,9 @@
 
 package org.springframework.samples.petclinic.repository;
 
-import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.samples.petclinic.model.Specialty;
 
@@ -26,15 +28,26 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
  * @author Vitaliy Fedoriv
  *
  */
+@ApplicationScoped
+public class SpecialtyRepository implements PanacheRepository<Specialty> {
+	
+    @PersistenceContext
+    private EntityManager em;
 
-public interface SpecialtyRepository extends PanacheRepository<Specialty>{
-	
-	Specialty findById(int id) ;
-	
-	List<Specialty> listAll() ;
-	
-	void save(Specialty specialty) ;
-	
-	void delete(Specialty specialty) ;
+	public void save(Specialty specialty) {
+		if (specialty.getId() == null) {
+            this.em.persist(specialty);
+        } else {
+            this.em.merge(specialty);
+        }
+	}
+
+	@Override
+	public void delete(Specialty specialty) {
+		this.em.remove(this.em.contains(specialty) ? specialty : this.em.merge(specialty));
+		Integer specId = specialty.getId();
+		this.em.createNativeQuery("DELETE FROM vet_specialties WHERE specialty_id=" + specId).executeUpdate();
+		this.em.createQuery("DELETE FROM Specialty specialty WHERE id=" + specId).executeUpdate();
+	}
 
 }

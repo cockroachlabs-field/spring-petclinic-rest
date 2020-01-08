@@ -17,37 +17,50 @@ package org.springframework.samples.petclinic.repository;
 
 import java.util.List;
 
-import org.springframework.samples.petclinic.model.BaseEntity;
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.springframework.samples.petclinic.model.Visit;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
- * Repository class for <code>Visit</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * JPA implementation of the ClinicService interface using EntityManager.
+ * <p/>
+ * <p>The mappings are defined in "orm.xml" located in the META-INF directory.
  *
- * @author Ken Krebs
- * @author Juergen Hoeller
+ * @author Mike Keith
+ * @author Rod Johnson
  * @author Sam Brannen
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface VisitRepository extends PanacheRepository<Visit>{
+@ApplicationScoped
+public class VisitRepository implements PanacheRepository<Visit> {
 
-    /**
-     * Save a <code>Visit</code> to the data store, either inserting or updating it.
-     *
-     * @param visit the <code>Visit</code> to save
-     * @see BaseEntity#isNew
-     */
-    void save(Visit visit) ;
+    @PersistenceContext
+    private EntityManager em;
 
-    List<Visit> findByPetId(Integer petId);
+    public void save(Visit visit) {
+        if (visit.getId() == null) {
+            this.em.persist(visit);
+        } else {
+            this.em.merge(visit);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Visit> findByPetId(Integer petId) {
+        Query query = this.em.createQuery("SELECT v FROM Visit v where v.pet.id= :id");
+        query.setParameter("id", petId);
+        return query.getResultList();
+    }
     
-	Visit findById(int id) ;
-	
-	List<Visit> listAll() ;
-
-	void delete(Visit visit) ;
+	@Override
+	public void delete(Visit visit)  {
+        this.em.remove(this.em.contains(visit) ? visit : this.em.merge(visit));
+	}
 
 }

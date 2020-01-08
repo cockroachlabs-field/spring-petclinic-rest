@@ -16,68 +16,74 @@
 package org.springframework.samples.petclinic.repository;
 
 import java.util.Collection;
-import java.util.List;
 
-import org.springframework.samples.petclinic.model.BaseEntity;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 import org.springframework.samples.petclinic.model.Owner;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
- * Repository class for <code>Owner</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * JPA implementation of the {@link OwnerRepository} interface.
  *
- * @author Ken Krebs
- * @author Juergen Hoeller
+ * @author Mike Keith
+ * @author Rod Johnson
  * @author Sam Brannen
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface OwnerRepository extends PanacheRepository<Owner> {
+
+@ApplicationScoped
+public class OwnerRepository implements PanacheRepository<Owner> {
+
+    @Inject
+    private EntityManager em;
 
     /**
-     * Retrieve <code>Owner</code>s from the data store by last name, returning all owners whose last name <i>starts</i>
-     * with the given name.
-     *
-     * @param lastName Value to search for
-     * @return a <code>Collection</code> of matching <code>Owner</code>s (or an empty <code>Collection</code> if none
-     * found)
+     * Important: in the current version of this method, we load Owners with all
+     * their Pets and Visits while we do not need Visits at all and we only need one
+     * property from the Pet objects (the 'name' property). There are some ways to
+     * improve it such as: - creating a Ligtweight class (example here:
+     * https://community.jboss.org/wiki/LightweightClass) - Turning on lazy-loading
+     * and using {@link OpenSessionInViewFilter}
      */
-    Collection<Owner> findByLastName(String lastName) throws Exception;
+    @SuppressWarnings("unchecked")
+    public Collection<Owner> findByLastName(String lastName) {
+        // using 'join fetch' because a single query should load both owners and pets
+        // using 'left join fetch' because it might happen that an owner does not have
+        // pets yet
+        Query query = this.em.createQuery(
+                "SELECT DISTINCT owner FROM Owner owner left join fetch owner.pets WHERE owner.lastName LIKE :lastName");
+        query.setParameter("lastName", lastName + "%");
+        return query.getResultList();
+    }
 
-    /**
-     * Retrieve an <code>Owner</code> from the data store by id.
-     *
-     * @param id the id to search for
-     * @return the <code>Owner</code> if found
-     * @throws org.springframework.dao.DataRetrievalFailureException if not found
-     */
-    Owner findById(int id) throws Exception;
+    @Override
+    public Owner findById(Long id) {
+        // using 'join fetch' because a single query should load both owners and pets
+        // using 'left join fetch' because it might happen that an owner does not have
+        // pets yet
+        Query query = this.em
+                .createQuery("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id");
+        query.setParameter("id", id);
+        return (Owner) query.getSingleResult();
+    }
 
+    public void save(Owner owner) {
+        if (owner.getId() == null) {
+            this.em.persist(owner);
+        } else {
+            this.em.merge(owner);
+        }
 
-    /**
-     * Save an <code>Owner</code> to the data store, either inserting or updating it.
-     *
-     * @param owner the <code>Owner</code> to save
-     * @see BaseEntity#isNew
-     */
-    void save(Owner owner) throws Exception;
-    
-    /**
-     * Retrieve <code>Owner</code>s from the data store, returning all owners 
-     *
-     * @return a <code>Collection</code> of <code>Owner</code>s (or an empty <code>Collection</code> if none
-     * found)
-     */
-	List<Owner> listAll();
-	
-    /**
-     * Delete an <code>Owner</code> to the data store by <code>Owner</code>.
-     *
-     * @param owner the <code>Owner</code> to delete
-     * 
-     */
-	void delete(Owner owner);
+    }
 
+    @Override
+    public void delete(Owner owner) {
+        this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
+    }
 
 }

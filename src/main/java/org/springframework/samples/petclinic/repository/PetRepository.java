@@ -17,48 +17,42 @@ package org.springframework.samples.petclinic.repository;
 
 import java.util.List;
 
-import org.springframework.samples.petclinic.model.BaseEntity;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
- * Repository class for <code>Pet</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * JPA implementation of the {@link PetRepository} interface.
  *
- * @author Ken Krebs
- * @author Juergen Hoeller
+ * @author Mike Keith
+ * @author Rod Johnson
  * @author Sam Brannen
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface PetRepository extends PanacheRepository<Pet>{
+@ApplicationScoped
+public class PetRepository implements PanacheRepository<Pet> {
+	@Inject
+	private EntityManager em;
+	
+    @SuppressWarnings("unchecked")
+    public List<PetType> findPetTypes() {
+        return this.em.createQuery("SELECT ptype FROM PetType ptype ORDER BY ptype.name").getResultList();
+    }
 
-    /**
-     * Retrieve all <code>PetType</code>s from the data store.
-     *
-     * @return a <code>Collection</code> of <code>PetType</code>s
-     */
-    List<PetType> findPetTypes() throws Exception;
-
-    /**
-     * Retrieve a <code>Pet</code> from the data store by id.
-     *
-     * @param id the id to search for
-     * @return the <code>Pet</code> if found
-     * @throws org.springframework.dao.DataRetrievalFailureException if not found
-     */
-    Pet findById(int id) throws Exception;
-
-    /**
-     * Save a <code>Pet</code> to the data store, either inserting or updating it.
-     *
-     * @param pet the <code>Pet</code> to save
-     * @see BaseEntity#isNew
-     */
-    void save(Pet pet) throws Exception;
-    
-    
+	public void delete(Pet pet) {
+		//this.em.remove(this.em.contains(pet) ? pet : this.em.merge(pet));
+		String petId = pet.getId().toString();
+		this.em.createQuery("DELETE FROM Visit visit WHERE pet_id=" + petId).executeUpdate();
+		this.em.createQuery("DELETE FROM Pet pet WHERE id=" + petId).executeUpdate();
+		if (em.contains(pet)) {
+			em.remove(pet);
+		}
+	}
 
 }

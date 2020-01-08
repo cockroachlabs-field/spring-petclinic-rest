@@ -34,12 +34,15 @@
 15. Replaced hard coded roles with Roles constants
 16. CORS configured on application.properties file 
 17. Removed DataAccessException throw clause
+18. Removed 2 levels repository implementation *Repository + * RepositoryImpl -> *Repository
+19. 
 
 ## TODO
 
 1. Transactional
 2. Cache
 3. Test
+4. AspectJ
   
 ## NOT MIGRATED
 

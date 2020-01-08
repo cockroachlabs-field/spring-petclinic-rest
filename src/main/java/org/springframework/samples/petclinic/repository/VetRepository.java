@@ -15,36 +15,41 @@
  */
 package org.springframework.samples.petclinic.repository;
 
-import java.util.List;
+import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 import org.springframework.samples.petclinic.model.Vet;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
 /**
- * Repository class for <code>Vet</code> domain objects All method names are compliant with Spring Data naming
- * conventions so this interface can easily be extended for Spring Data See here: http://static.springsource.org/spring-data/jpa/docs/current/reference/html/jpa.repositories.html#jpa.query-methods.query-creation
+ * JPA implementation of the {@link VetRepository} interface.
  *
- * @author Ken Krebs
- * @author Juergen Hoeller
+ * @author Mike Keith
+ * @author Rod Johnson
  * @author Sam Brannen
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public interface VetRepository extends PanacheRepository<Vet> {
+@ApplicationScoped
+public class VetRepository implements PanacheRepository<Vet> {
 
-    /**
-     * Retrieve all <code>Vet</code>s from the data store.
-     *
-     * @return a <code>Collection</code> of <code>Vet</code>s
-     */
-    List<Vet> listAll() ;
-    
-	Vet findById(int id) ;
+    @PersistenceContext
+    private EntityManager em;
 
-	void save(Vet vet) ;
-	
-	void delete(Vet vet) ;
+	public void save(Vet vet)  {
+        if (vet.getId() == null) {
+            this.em.persist(vet);
+        } else {
+            this.em.merge(vet);
+        }
+	}
+
+	@Override
+	public void delete(Vet vet)  {
+		this.em.remove(this.em.contains(vet) ? vet : this.em.merge(vet));
+	}
 
 
 }
