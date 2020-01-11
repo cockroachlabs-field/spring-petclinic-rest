@@ -5,8 +5,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.inject.Inject;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
@@ -16,7 +16,7 @@ public abstract class AbstractUserServiceTests {
     @Inject
     private UserService userService;
 
-    @Before
+    @BeforeEach
     public void init() {
         MockitoAnnotations.initMocks(this);
     }

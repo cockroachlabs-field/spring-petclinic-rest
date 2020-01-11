@@ -33,36 +33,36 @@ import org.springframework.samples.petclinic.model.Visit;
  */
 public interface ClinicService {
 
-	Pet findPetById(int id) ;
+	Pet findPetById(long id) ;
 	Collection<Pet> findAllPets() ;
 	void savePet(Pet pet) ;
 	void deletePet(Pet pet) ;
 
-	Collection<Visit> findVisitsByPetId(int petId);
-	Visit findVisitById(int visitId) ;
+	Collection<Visit> findVisitsByPetId(long petId);
+	Visit findVisitById(long visitId) ;
 	Collection<Visit> findAllVisits() ;
 	void saveVisit(Visit visit) ;
 	void deleteVisit(Visit visit) ;
 	
-	Vet findVetById(int id) ;
+	Vet findVetById(long id) ;
 	Collection<Vet> findVets() ;
 	Collection<Vet> findAllVets() ;
 	void saveVet(Vet vet) ;
 	void deleteVet(Vet vet) ;
 	
-	Owner findOwnerById(int id) ;
+	Owner findOwnerById(long id) ;
 	Collection<Owner> findAllOwners() ;
 	void saveOwner(Owner owner) ;
 	void deleteOwner(Owner owner) ;
 	Collection<Owner> findOwnerByLastName(String lastName) ;
 
-	PetType findPetTypeById(int petTypeId);
+	PetType findPetTypeById(long petTypeId);
 	Collection<PetType> findAllPetTypes() ;
 	Collection<PetType> findPetTypes() ;
 	void savePetType(PetType petType) ;
 	void deletePetType(PetType petType) ;
 	
-	Specialty findSpecialtyById(int specialtyId);
+	Specialty findSpecialtyById(long specialtyId);
 	Collection<Specialty> findAllSpecialties() ;
 	void saveSpecialty(Specialty specialty) ;
 	void deleteSpecialty(Specialty specialty) ;

@@ -21,8 +21,9 @@ import java.util.Collection;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -33,7 +34,6 @@ import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.util.EntityUtils;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p> Base class for {@link ClinicService} integration tests. </p> <p> Subclasses should specify Spring context

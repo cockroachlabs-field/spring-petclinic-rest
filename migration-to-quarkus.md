@@ -36,6 +36,9 @@
 17. Removed DataAccessException throw clause
 18. Removed 2 levels repository implementation *Repository + * RepositoryImpl -> *Repository
 19. Moved to JUnit 5
+20. Removed in tests : SpringBootTest , ContextConfiguration, WebAppConfiguration
+21. Added QuarkusTest
+22. Removed tests classes for JDBCN and SpringDataJPA
 
 ## TODO
 
