@@ -39,6 +39,7 @@
 20. Removed in tests : SpringBootTest , ContextConfiguration, WebAppConfiguration
 21. Added QuarkusTest
 22. Removed tests classes for JDBCN and SpringDataJPA
+23. Migrated REST tests to RestAssured and Junit 5
 
 ## TODO
 
