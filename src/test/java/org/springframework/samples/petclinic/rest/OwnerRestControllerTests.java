@@ -16,37 +16,26 @@
 
 package org.springframework.samples.petclinic.rest;
 
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.samples.petclinic.service.clinicService.ApplicationTestConfig;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
+
 
 
 /**
@@ -54,27 +43,16 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
  *
  * @author Vitaliy Fedoriv
  */
-@SpringBootTest
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=ApplicationTestConfig.class)
-@WebAppConfiguration
+@QuarkusTest
 public class OwnerRestControllerTests {
 
-    @Inject
-    private OwnerRestController ownerRestController;
-
-    @MockBean
+    @Mock
     private ClinicService clinicService;
-
-    private MockMvc mockMvc;
 
     private List<Owner> owners;
 
-    @Before
+    @BeforeEach
     public void initOwners(){
-    	this.mockMvc = MockMvcBuilders.standaloneSetup(ownerRestController)
-    			.setControllerAdvice(new ExceptionControllerAdvice())
-    			.build();
     	owners = new ArrayList<Owner>();
 
     	Owner owner = new Owner();
@@ -117,159 +95,200 @@ public class OwnerRestControllerTests {
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetOwnerSuccess() throws Exception {
     	given(this.clinicService.findOwnerById(1)).willReturn(owners.get(0));
-        this.mockMvc.perform(get("/api/owners/1")
-        	.accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.firstName").value("George"));
+		given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .get("/api/owners/1")
+		.then()
+		  .statusCode(200)
+		  .contentType(ContentType.JSON)
+          .body("id", equalTo(1))
+          .body("firstName", equalTo("George"));
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetOwnerNotFound() throws Exception {
     	given(this.clinicService.findOwnerById(-1)).willReturn(null);
-        this.mockMvc.perform(get("/api/owners/-1")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+        given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .get("/api/owners/-1")
+		.then()
+			.contentType(ContentType.JSON)
+			.statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetOwnersListSuccess() throws Exception {
     	owners.remove(0);
     	owners.remove(1);
     	given(this.clinicService.findOwnerByLastName("Davis")).willReturn(owners);
-        this.mockMvc.perform(get("/api/owners/*/lastname/Davis")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.[0].id").value(2))
-            .andExpect(jsonPath("$.[0].firstName").value("Betty"))
-            .andExpect(jsonPath("$.[1].id").value(4))
-            .andExpect(jsonPath("$.[1].firstName").value("Harold"));
+        given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .get("/api/owners/*/lastname/Davis")
+		.then()
+			.contentType(ContentType.JSON)
+            .statusCode(Status.OK.getStatusCode())
+            .body("[0].id", equalTo(2))
+            .body("[0].firstName", equalTo("Betty"))
+            .body("[1].id", equalTo(4))
+            .body("[1].firstName", equalTo("Harold"));
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetOwnersListNotFound() throws Exception {
     	owners.clear();
     	given(this.clinicService.findOwnerByLastName("0")).willReturn(owners);
-        this.mockMvc.perform(get("/api/owners/?lastName=0")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
+        given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .get("/api/owners/?lastName=0")
+		.then()
+		  .contentType(ContentType.JSON)
+		  .statusCode(Status.NOT_FOUND.getStatusCode());
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetAllOwnersSuccess() throws Exception {
     	owners.remove(0);
     	owners.remove(1);
     	given(this.clinicService.findAllOwners()).willReturn(owners);
-        this.mockMvc.perform(get("/api/owners/")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.[0].id").value(2))
-            .andExpect(jsonPath("$.[0].firstName").value("Betty"))
-            .andExpect(jsonPath("$.[1].id").value(4))
-            .andExpect(jsonPath("$.[1].firstName").value("Harold"));
+        given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+			.get("/api/owners/")
+		.then()
+			.statusCode(Status.OK.getStatusCode())
+			.contentType(ContentType.JSON)
+			.body("[0].id", equalTo(2))
+            .body("[0].firstName", equalTo("Betty"))
+            .body("[1].id", equalTo(4))
+            .body("[1].firstName", equalTo("Harold"));
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetAllOwnersNotFound() throws Exception {
     	owners.clear();
     	given(this.clinicService.findAllOwners()).willReturn(owners);
-        this.mockMvc.perform(get("/api/owners/")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
-    }
+        given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		.get("/api/owners/")
+		.then()
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.NOT_FOUND.getStatusCode());
+		}
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testCreateOwnerSuccess() throws Exception {
     	Owner newOwner = owners.get(0);
     	newOwner.setId(999);
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
-    	this.mockMvc.perform(post("/api/owners/")
-    		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-    		.andExpect(status().isCreated());
-    }
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .post("/api/owners/")
+		.then()
+			.body(equalTo(newOwnerAsJSON))
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.CREATED.getStatusCode());
+		}
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testCreateOwnerError() throws Exception {
     	Owner newOwner = owners.get(0);
     	newOwner.setId(null);
     	newOwner.setFirstName(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
-    	this.mockMvc.perform(post("/api/owners/")
-        		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        		.andExpect(status().isBadRequest());
-     }
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .post("/api/owners/")
+		.then()
+				.body(equalTo(newOwnerAsJSON))
+				.contentType(ContentType.JSON)
+				.statusCode(Status.BAD_REQUEST.getStatusCode());
+			}
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testUpdateOwnerSuccess() throws Exception {
     	given(this.clinicService.findOwnerById(1)).willReturn(owners.get(0));
     	Owner newOwner = owners.get(0);
     	newOwner.setFirstName("George I");
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
-    	this.mockMvc.perform(put("/api/owners/1")
-    		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(content().contentType("application/json;charset=UTF-8"))
-        	.andExpect(status().isNoContent());
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .put("/api/owners/1")
+		.then()
+			.body(equalTo(newOwnerAsJSON))
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.NO_CONTENT.getStatusCode());
 
-    	this.mockMvc.perform(get("/api/owners/1")
-           	.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.firstName").value("George I"));
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .get("/api/owners/1")
+		.then()
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.OK.getStatusCode())
+            .body("id", equalTo(1))
+            .body("firstName", equalTo("George I"));
 
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testUpdateOwnerError() throws Exception {
     	Owner newOwner = owners.get(0);
     	newOwner.setFirstName("");
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
-    	this.mockMvc.perform(put("/api/owners/1")
-    		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isBadRequest());
-     }
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .put("/api/owners/1")
+		.then()
+			.body(equalTo(newOwnerAsJSON))
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.BAD_REQUEST.getStatusCode());
+		}
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testDeleteOwnerSuccess() throws Exception {
     	Owner newOwner = owners.get(0);
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given(this.clinicService.findOwnerById(1)).willReturn(owners.get(0));
-    	this.mockMvc.perform(delete("/api/owners/1")
-    		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isNoContent());
-    }
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .delete("/api/owners/1")
+		.then()
+			.body(equalTo(newOwnerAsJSON))
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.NO_CONTENT.getStatusCode());
+		}
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testDeleteOwnerError() throws Exception {
     	Owner newOwner = owners.get(0);
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given(this.clinicService.findOwnerById(-1)).willReturn(null);
-    	this.mockMvc.perform(delete("/api/owners/-1")
-    		.content(newOwnerAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isNotFound());
-    }
+    	given()
+		  .auth().basic("owner_admin", "admin")
+		.when()
+		  .delete("/api/owners/-1")
+		.then()
+			.body(equalTo(newOwnerAsJSON))
+        	.contentType(ContentType.JSON)
+			.statusCode(Status.NOT_FOUND.getStatusCode());
+		}
 
 }

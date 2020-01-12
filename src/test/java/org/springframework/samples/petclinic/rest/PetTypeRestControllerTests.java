@@ -17,36 +17,25 @@
 package org.springframework.samples.petclinic.rest;
 
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.samples.petclinic.service.clinicService.ApplicationTestConfig;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 
 
 /**
@@ -54,27 +43,19 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
  *
  * @author Vitaliy Fedoriv
  */
-@SpringBootTest
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes=ApplicationTestConfig.class)
-@WebAppConfiguration
-public class PetTypeRestControllerTests {
+@QuarkusTest
+ public class PetTypeRestControllerTests {
 
     @Inject
     private PetTypeRestController petTypeRestController;
 
-    @MockBean
+    @Mock
     private ClinicService clinicService;
-
-    private MockMvc mockMvc;
 
     private List<PetType> petTypes;
 
-    @Before
+    @BeforeAll
     public void initPetTypes(){
-    	this.mockMvc = MockMvcBuilders.standaloneSetup(petTypeRestController)
-    			.setControllerAdvice(new ExceptionControllerAdvice())
-    			.build();
     	petTypes = new ArrayList<PetType>();
 
     	PetType petType = new PetType();
@@ -99,160 +80,206 @@ public class PetTypeRestControllerTests {
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetPetTypeSuccessAsOwnerAdmin() throws Exception {
     	given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
-        this.mockMvc.perform(get("/api/pettypes/1")
-        	.accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.name").value("cat"));
+        given()
+			.auth().basic("owner_admin", "admin")
+		.when()
+          .get("/api/pettypes/1")
+        .then()
+        .contentType(ContentType.JSON)
+        .statusCode(Status.OK.getStatusCode())
+            .body("id", equalTo(1))
+            .body("name", equalTo("cat"));
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testGetPetTypeSuccessAsVetAdmin() throws Exception {
         given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
-        this.mockMvc.perform(get("/api/pettypes/1")
-            .accept(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.id").value(1))
-            .andExpect(jsonPath("$.name").value("cat"));
+        given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .get("/api/pettypes/1")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.OK.getStatusCode())
+            .body("id", equalTo(1))
+            .body("name", equalTo("cat"));
     }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetPetTypeNotFound() throws Exception {
     	given(this.clinicService.findPetTypeById(-1)).willReturn(null);
-        this.mockMvc.perform(get("/api/pettypes/-1")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
-    }
+        given()
+			.auth().basic("owner_admin", "admin")
+		.when()
+          .get("/api/pettypes/-1")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.NOT_FOUND.getStatusCode());
+  }
 
     @Test
-    @WithMockUser(roles="OWNER_ADMIN")
     public void testGetAllPetTypesSuccessAsOwnerAdmin() throws Exception {
     	petTypes.remove(0);
     	petTypes.remove(1);
     	given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
-        this.mockMvc.perform(get("/api/pettypes/")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-        	.andExpect(jsonPath("$.[0].id").value(2))
-        	.andExpect(jsonPath("$.[0].name").value("dog"))
-        	.andExpect(jsonPath("$.[1].id").value(4))
-        	.andExpect(jsonPath("$.[1].name").value("snake"));
+        given()
+			.auth().basic("owner_admin", "admin")
+		.when()
+          .get("/api/pettypes/")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.OK.getStatusCode())
+        	.body("[0].id", equalTo(2))
+        	.body("[0].name", equalTo("dog"))
+        	.body("[1].id", equalTo(4))
+        	.body("[1].name", equalTo("snake"));
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testGetAllPetTypesSuccessAsVetAdmin() throws Exception {
         petTypes.remove(0);
         petTypes.remove(1);
         given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
-        this.mockMvc.perform(get("/api/pettypes/")
-            .accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.[0].id").value(2))
-            .andExpect(jsonPath("$.[0].name").value("dog"))
-            .andExpect(jsonPath("$.[1].id").value(4))
-            .andExpect(jsonPath("$.[1].name").value("snake"));
+        given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .get("/api/pettypes/")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.OK.getStatusCode())
+            .body("[0].id", equalTo(2))
+            .body("[0].name", equalTo("dog"))
+            .body("[1].id", equalTo(4))
+            .body("[1].name", equalTo("snake"));
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testGetAllPetTypesNotFound() throws Exception {
     	petTypes.clear();
     	given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
-        this.mockMvc.perform(get("/api/pettypes/")
-        	.accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNotFound());
-    }
+        given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .get("/api/pettypes/")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.NOT_FOUND.getStatusCode());
+  }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testCreatePetTypeSuccess() throws Exception {
     	PetType newPetType = petTypes.get(0);
     	newPetType.setId(999);
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
-    	this.mockMvc.perform(post("/api/pettypes/")
-    		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-    		.andExpect(status().isCreated());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .post("/api/pettypes/")
+        .then()
+            .body(equalTo(newPetTypeAsJSON))
+			.contentType(ContentType.JSON)
+			.statusCode(Status.CREATED.getStatusCode());
+
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testCreatePetTypeError() throws Exception {
     	PetType newPetType = petTypes.get(0);
     	newPetType.setId(null);
     	newPetType.setName(null);
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
-    	this.mockMvc.perform(post("/api/pettypes/")
-        		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        		.andExpect(status().isBadRequest());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .post("/api/pettypes/")
+        .then()
+                .body(equalTo(newPetTypeAsJSON))
+                .contentType(ContentType.JSON)
+                .statusCode(Status.BAD_REQUEST.getStatusCode());
+    
      }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testUpdatePetTypeSuccess() throws Exception {
     	given(this.clinicService.findPetTypeById(2)).willReturn(petTypes.get(1));
     	PetType newPetType = petTypes.get(1);
     	newPetType.setName("dog I");
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
-    	this.mockMvc.perform(put("/api/pettypes/2")
-    		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(content().contentType("application/json;charset=UTF-8"))
-        	.andExpect(status().isNoContent());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .put("/api/pettypes/2")
+        .then()
+            .body(equalTo(newPetTypeAsJSON))
+			.contentType(ContentType.JSON)
+			.statusCode(Status.NO_CONTENT.getStatusCode());
 
-    	this.mockMvc.perform(get("/api/pettypes/2")
-           	.accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType("application/json;charset=UTF-8"))
-            .andExpect(jsonPath("$.id").value(2))
-            .andExpect(jsonPath("$.name").value("dog I"));
+
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .get("/api/pettypes/2")
+        .then()
+          .contentType(ContentType.JSON)
+          .statusCode(Status.OK.getStatusCode())
+            .body("id", equalTo(2))
+            .body("name", equalTo("dog I"));
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testUpdatePetTypeError() throws Exception {
     	PetType newPetType = petTypes.get(0);
     	newPetType.setName("");
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
-    	this.mockMvc.perform(put("/api/pettypes/1")
-    		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isBadRequest());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .put("/api/pettypes/1")
+        .then()
+            .body(equalTo(newPetTypeAsJSON))
+			.contentType(ContentType.JSON)
+			.statusCode(Status.BAD_REQUEST.getStatusCode());
+
      }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testDeletePetTypeSuccess() throws Exception {
     	PetType newPetType = petTypes.get(0);
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
-    	this.mockMvc.perform(delete("/api/pettypes/1")
-    		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isNoContent());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .delete("/api/pettypes/1")
+        .then()
+            .body(equalTo(newPetTypeAsJSON))
+			.contentType(ContentType.JSON)
+			.statusCode(Status.NO_CONTENT.getStatusCode());
+
     }
 
     @Test
-    @WithMockUser(roles="VET_ADMIN")
     public void testDeletePetTypeError() throws Exception {
     	PetType newPetType = petTypes.get(0);
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given(this.clinicService.findPetTypeById(-1)).willReturn(null);
-    	this.mockMvc.perform(delete("/api/pettypes/-1")
-    		.content(newPetTypeAsJSON).accept(MediaType.APPLICATION_JSON_VALUE).contentType(MediaType.APPLICATION_JSON_VALUE))
-        	.andExpect(status().isNotFound());
+    	given()
+			.auth().basic("vet_admin", "admin")
+		.when()
+          .delete("/api/pettypes/-1")
+        .then()
+            .body(equalTo(newPetTypeAsJSON))
+          .contentType(ContentType.JSON)
+          .statusCode(Status.NOT_FOUND.getStatusCode());
+
     }
 
 }
