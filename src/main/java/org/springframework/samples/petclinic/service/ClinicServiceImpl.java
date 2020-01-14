@@ -28,12 +28,12 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
-import org.springframework.samples.petclinic.repository.OwnerRepository;
-import org.springframework.samples.petclinic.repository.PetRepository;
-import org.springframework.samples.petclinic.repository.PetTypeRepository;
-import org.springframework.samples.petclinic.repository.SpecialtyRepository;
-import org.springframework.samples.petclinic.repository.VetRepository;
-import org.springframework.samples.petclinic.repository.VisitRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaOwnerRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaPetRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaPetTypeRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaSpecialtyRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaVetRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaVisitRepository;
 
 /**
  * Mostly used as a facade for all Petclinic controllers
@@ -45,21 +45,21 @@ import org.springframework.samples.petclinic.repository.VisitRepository;
 @ApplicationScoped
 public class ClinicServiceImpl implements ClinicService {
 
-    private PetRepository petRepository;
-    private VetRepository vetRepository;
-    private OwnerRepository ownerRepository;
-    private VisitRepository visitRepository;
-    private SpecialtyRepository specialtyRepository;
-	private PetTypeRepository petTypeRepository;
+    private JpaPetRepository petRepository;
+    private JpaVetRepository vetRepository;
+    private JpaOwnerRepository ownerRepository;
+    private JpaVisitRepository visitRepository;
+    private JpaSpecialtyRepository specialtyRepository;
+	private JpaPetTypeRepository petTypeRepository;
 
     @Inject
      public ClinicServiceImpl(
-       		 PetRepository petRepository,
-    		 VetRepository vetRepository,
-    		 OwnerRepository ownerRepository,
-    		 VisitRepository visitRepository,
-    		 SpecialtyRepository specialtyRepository,
-			 PetTypeRepository petTypeRepository) {
+       		 JpaPetRepository petRepository,
+    		 JpaVetRepository vetRepository,
+    		 JpaOwnerRepository ownerRepository,
+    		 JpaVisitRepository visitRepository,
+    		 JpaSpecialtyRepository specialtyRepository,
+			 JpaPetTypeRepository petTypeRepository) {
         this.petRepository = petRepository;
         this.vetRepository = vetRepository;
         this.ownerRepository = ownerRepository;
@@ -245,7 +245,7 @@ public class ClinicServiceImpl implements ClinicService {
 	@Override
 	@Transactional
 	public void savePet(Pet pet) {
-		petRepository.save(pet);
+		petRepository.persist(pet);
 		
 	}
 

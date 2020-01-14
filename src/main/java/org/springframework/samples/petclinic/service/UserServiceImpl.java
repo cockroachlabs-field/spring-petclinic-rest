@@ -1,18 +1,18 @@
 package org.springframework.samples.petclinic.service;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.springframework.samples.petclinic.model.Role;
 import org.springframework.samples.petclinic.model.User;
-import org.springframework.samples.petclinic.repository.UserRepository;
-import org.springframework.stereotype.Service;
+import org.springframework.samples.petclinic.repository.jpa.JpaUserRepository;
 
-@Service
+@ApplicationScoped
 public class UserServiceImpl implements UserService {
 
     @Inject
-    private UserRepository userRepository;
+    private JpaUserRepository userRepository;
 
     @Override
     @Transactional
