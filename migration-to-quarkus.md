@@ -48,6 +48,7 @@
 3. AspectJ
 4. ControllerAdvice
 5. Swagger
+6. DB Initial Schema
   
 ## NOT MIGRATED
 
