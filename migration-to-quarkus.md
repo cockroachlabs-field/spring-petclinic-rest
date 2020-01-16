@@ -38,17 +38,20 @@
 19. Moved to JUnit 5
 20. Removed in tests : SpringBootTest , ContextConfiguration, WebAppConfiguration
 21. Added QuarkusTest
-22. Removed tests classes for JDBCN and SpringDataJPA
+22. Removed tests classes for JDBC and SpringDataJPA
 23. Migrated REST tests to RestAssured and Junit 5
+24. Added OpenAPI support and removed ApplicationSwaggerConfig
+25. Removed security classes as we do with Elytron conf
+26. Added properties for security
+27. Added microprofile metrics with smallrye-metrics extension
 
 ## TODO
 
 1. Cache
 2. Test
-3. AspectJ
+3. AspectJ for monitoring calls
 4. ControllerAdvice
-5. Swagger
-6. DB Initial Schema
+5. DB Initial Schema
   
 ## NOT MIGRATED
 

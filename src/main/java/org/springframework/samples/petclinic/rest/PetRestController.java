@@ -38,8 +38,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
+import org.springframework.samples.petclinic.security.Roles;
 
 /**
  * @author Vitaliy Fedoriv
