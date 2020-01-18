@@ -44,6 +44,9 @@
 25. Removed security classes as we do with Elytron conf
 26. Added properties for security
 27. Added microprofile metrics with smallrye-metrics extension
+28. Modified tests to use QuarkusTest, removing Mocking and removing the abstract test class
+29. Migrated @ControllerAdvice as global exception handler to JAX-RS ExceptionMapper
+30. Converted PropertyComparator and MutableSortDefinition to Stream.sorted
 
 ## TODO
 
