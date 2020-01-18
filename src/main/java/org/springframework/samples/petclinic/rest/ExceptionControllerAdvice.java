@@ -16,9 +16,10 @@
 
 package org.springframework.samples.petclinic.rest;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import static javax.ws.rs.core.Response.status;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,11 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 
-@ControllerAdvice
-public class ExceptionControllerAdvice {
+@Provider 
+public class ExceptionControllerAdvice implements ExceptionMapper<Exception> {
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<String> exception(Exception e) {
+	public Response toResponse(Exception e) {
 		ObjectMapper mapper = new ObjectMapper();
 		ErrorInfo errorInfo = new ErrorInfo(e);
 		String respJSONstring = "{}";
@@ -41,7 +41,7 @@ public class ExceptionControllerAdvice {
 		} catch (JsonProcessingException e1) {
 			e1.printStackTrace();
 		}
-		return ResponseEntity.badRequest().body(respJSONstring);
+		return status(Response.Status.BAD_REQUEST).entity(respJSONstring).build();
 	}
 	
 	private class ErrorInfo {
