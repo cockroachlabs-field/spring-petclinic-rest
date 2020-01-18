@@ -5,21 +5,17 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 import javax.inject.Inject;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.service.UserService;
 
-public abstract class AbstractUserServiceTests {
+import io.quarkus.test.junit.QuarkusTest;
+
+@QuarkusTest
+public class UserServiceTests {
 
     @Inject
     private UserService userService;
-
-    @BeforeEach
-    public void init() {
-        MockitoAnnotations.initMocks(this);
-    }
 
     @Test
     public void shouldAddUser() throws Exception {

@@ -31,22 +31,40 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.repository.jpa.JpaPetTypeRepository;
+import org.springframework.samples.petclinic.repository.jpa.JpaVetRepository;
 import org.springframework.samples.petclinic.service.ClinicService;
-import org.springframework.samples.petclinic.util.EntityUtils;
-import org.springframework.test.context.ContextConfiguration;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 /**
- * <p> Base class for {@link ClinicService} integration tests. </p> <p> Subclasses should specify Spring context
- * configuration using {@link ContextConfiguration @ContextConfiguration} annotation </p> <p>
- * AbstractclinicServiceTests and its subclasses benefit from the following services provided by the Spring
- * TestContext Framework: </p> <ul> <li><strong>Spring IoC container caching</strong> which spares us unnecessary set up
- * time between test execution.</li> <li><strong>Dependency Injection</strong> of test fixture instances, meaning that
- * we don't need to perform application context lookups. See the use of {@link Autowired @Inject} on the <code>{@link
- * AbstractClinicServiceTests#clinicService clinicService}</code> instance variable, which uses autowiring <em>by
- * type</em>. <li><strong>Transaction management</strong>, meaning each test method is executed in its own transaction,
- * which is automatically rolled back by default. Thus, even if tests insert or otherwise change database state, there
- * is no need for a teardown or cleanup script. <li> An {@link org.springframework.context.ApplicationContext
- * ApplicationContext} is also inherited and can be used for explicit bean lookup if necessary. </li> </ul>
+ * <p>
+ * Base class for {@link ClinicService} integration tests.
+ * </p>
+ * <p>
+ * Subclasses should specify Spring context configuration using
+ * {@link ContextConfiguration @ContextConfiguration} annotation
+ * </p>
+ * <p>
+ * AbstractclinicServiceTests and its subclasses benefit from the following
+ * services provided by the Spring TestContext Framework:
+ * </p>
+ * <ul>
+ * <li><strong>Spring IoC container caching</strong> which spares us unnecessary
+ * set up time between test execution.</li>
+ * <li><strong>Dependency Injection</strong> of test fixture instances, meaning
+ * that we don't need to perform application context lookups. See the use of
+ * {@link Autowired @Inject} on the <code>{@link
+ * ClinicServiceTests#clinicService clinicService}</code> instance variable,
+ * which uses autowiring <em>by type</em>.
+ * <li><strong>Transaction management</strong>, meaning each test method is
+ * executed in its own transaction, which is automatically rolled back by
+ * default. Thus, even if tests insert or otherwise change database state, there
+ * is no need for a teardown or cleanup script.
+ * <li>An {@link org.springframework.context.ApplicationContext
+ * ApplicationContext} is also inherited and can be used for explicit bean
+ * lookup if necessary.</li>
+ * </ul>
  *
  * @author Ken Krebs
  * @author Rod Johnson
@@ -55,10 +73,17 @@ import org.springframework.test.context.ContextConfiguration;
  * @author Michael Isvy
  * @author Vitaliy Fedoriv
  */
-public abstract class AbstractClinicServiceTests {
+@QuarkusTest
+public class ClinicServiceTests {
 
     @Inject
     protected ClinicService clinicService;
+
+    @Inject 
+    protected JpaPetTypeRepository jpaPetTypeRepository;    
+    
+    @Inject 
+    protected JpaVetRepository vetRepository;
 
     @Test
     public void shouldFindOwnersByLastName() {
@@ -138,8 +163,7 @@ public abstract class AbstractClinicServiceTests {
 
         Pet pet = new Pet();
         pet.setName("bowser");
-        Collection<PetType> types = this.clinicService.findPetTypes();
-        pet.setType(EntityUtils.getById(types, PetType.class, 2));
+        pet.setType(jpaPetTypeRepository.findById(2L));
         pet.setBirthDate(new Date());
         owner6.addPet(pet);
         assertThat(owner6.getPets().size()).isEqualTo(found + 1);
@@ -169,9 +193,7 @@ public abstract class AbstractClinicServiceTests {
 
     @Test
     public void shouldFindVets() {
-        Collection<Vet> vets = this.clinicService.findVets();
-
-        Vet vet = EntityUtils.getById(vets, Vet.class, 3);
+        Vet vet = vetRepository.findById(3L);
         assertThat(vet.getLastName()).isEqualTo("Douglas");
         assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
         assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");
@@ -207,9 +229,9 @@ public abstract class AbstractClinicServiceTests {
     @Test
     public void shouldFindAllPets(){
         Collection<Pet> pets = this.clinicService.findAllPets();
-        Pet pet1 = EntityUtils.getById(pets, Pet.class, 1);
+        Pet pet1 = pets.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(pet1.getName()).isEqualTo("Leo");
-        Pet pet3 = EntityUtils.getById(pets, Pet.class, 3);
+        Pet pet3 = pets.stream().filter(e -> e.getId() == 3).findFirst().get();
         assertThat(pet3.getName()).isEqualTo("Rosy");
     }
 
@@ -236,9 +258,9 @@ public abstract class AbstractClinicServiceTests {
     @Test
     public void shouldFindAllVisits(){
         Collection<Visit> visits = this.clinicService.findAllVisits();
-        Visit visit1 = EntityUtils.getById(visits, Visit.class, 1);
+        Visit visit1 = visits.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(visit1.getPet().getName()).isEqualTo("Samantha");
-        Visit visit3 = EntityUtils.getById(visits, Visit.class, 3);
+        Visit visit3 = visits.stream().filter(e -> e.getId() == 3).findFirst().get();
         assertThat(visit3.getPet().getName()).isEqualTo("Max");
     }
 
@@ -340,9 +362,9 @@ public abstract class AbstractClinicServiceTests {
     @Test
     public void shouldFindAllOwners(){
         Collection<Owner> owners = this.clinicService.findAllOwners();
-        Owner owner1 = EntityUtils.getById(owners, Owner.class, 1);
+        Owner owner1 = owners.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(owner1.getFirstName()).isEqualTo("George");
-        Owner owner3 = EntityUtils.getById(owners, Owner.class, 3);
+        Owner owner3 = owners.stream().filter(e -> e.getId() == 3).findFirst().get();
         assertThat(owner3.getFirstName()).isEqualTo("Eduardo");
     }
 
@@ -368,9 +390,9 @@ public abstract class AbstractClinicServiceTests {
     @Test
     public void shouldFindAllPetTypes(){
         Collection<PetType> petTypes = this.clinicService.findAllPetTypes();
-        PetType petType1 = EntityUtils.getById(petTypes, PetType.class, 1);
+        PetType petType1 = petTypes.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(petType1.getName()).isEqualTo("cat");
-        PetType petType3 = EntityUtils.getById(petTypes, PetType.class, 3);
+        PetType petType3 = petTypes.stream().filter(e -> e.getId() == 3).findFirst().get();
         assertThat(petType3.getName()).isEqualTo("lizard");
     }
 
@@ -424,9 +446,9 @@ public abstract class AbstractClinicServiceTests {
     @Test
     public void shouldFindAllSpecialtys(){
         Collection<Specialty> specialties = this.clinicService.findAllSpecialties();
-        Specialty specialty1 = EntityUtils.getById(specialties, Specialty.class, 1);
+        Specialty specialty1 = specialties.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(specialty1.getName()).isEqualTo("radiology");
-        Specialty specialty3 = EntityUtils.getById(specialties, Specialty.class, 3);
+        Specialty specialty3 = specialties.stream().filter(e -> e.getId() == 1).findFirst().get();
         assertThat(specialty3.getName()).isEqualTo("dentistry");
     }
 
