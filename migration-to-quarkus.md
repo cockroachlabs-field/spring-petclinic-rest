@@ -58,3 +58,4 @@
 
 1. JDBC repositories
 2. Spring Data repositories
+3. JMX for the Audit
