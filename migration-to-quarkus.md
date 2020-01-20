@@ -47,14 +47,12 @@
 28. Modified tests to use QuarkusTest, removing Mocking and removing the abstract test class
 29. Migrated @ControllerAdvice as global exception handler to JAX-RS ExceptionMapper
 30. Converted PropertyComparator and MutableSortDefinition to Stream.sorted
+31. Replace Spring AOP with CDI Interceptor and adding the annotation to few methods
 
 ## TODO
 
 1. Cache
-2. Test
-3. AspectJ for monitoring calls
-4. ControllerAdvice
-5. DB Initial Schema
+2. DB Initial Schema
   
 ## NOT MIGRATED
 

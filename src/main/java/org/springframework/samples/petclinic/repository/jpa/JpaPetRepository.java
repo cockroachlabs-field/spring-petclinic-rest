@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -40,11 +41,13 @@ public class JpaPetRepository implements PanacheRepository<Pet> {
 	@Inject
 	private EntityManager em;
 	
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
+	@Audited
     public List<PetType> findPetTypes() {
         return this.em.createQuery("SELECT ptype FROM PetType ptype ORDER BY ptype.name").getResultList();
     }
 
+    @Audited
 	public void delete(Pet pet) {
 		//this.em.remove(this.em.contains(pet) ? pet : this.em.merge(pet));
 		String petId = pet.getId().toString();

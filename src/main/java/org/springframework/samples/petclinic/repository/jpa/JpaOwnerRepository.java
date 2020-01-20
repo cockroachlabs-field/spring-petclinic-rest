@@ -23,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
 import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -51,6 +52,7 @@ public class JpaOwnerRepository implements PanacheRepository<Owner> {
      * and using {@link OpenSessionInViewFilter}
      */
     @SuppressWarnings("unchecked")
+    @Audited
     public Collection<Owner> findByLastName(String lastName) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
@@ -62,6 +64,7 @@ public class JpaOwnerRepository implements PanacheRepository<Owner> {
     }
 
     @Override
+    @Audited
     public Owner findById(Long id) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
@@ -72,6 +75,7 @@ public class JpaOwnerRepository implements PanacheRepository<Owner> {
         return (Owner) query.getSingleResult();
     }
 
+    @Audited
     public void save(Owner owner) {
         if (owner.getId() == null) {
             this.em.persist(owner);
@@ -82,6 +86,7 @@ public class JpaOwnerRepository implements PanacheRepository<Owner> {
     }
 
     @Override
+    @Audited
     public void delete(Owner owner) {
         this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
     }

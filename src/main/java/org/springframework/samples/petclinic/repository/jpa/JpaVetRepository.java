@@ -20,6 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.samples.petclinic.model.Vet;
+import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -38,6 +39,7 @@ public class JpaVetRepository implements PanacheRepository<Vet> {
     @PersistenceContext
     private EntityManager em;
 
+    @Audited
 	public void save(Vet vet)  {
         if (vet.getId() == null) {
             this.em.persist(vet);
@@ -47,6 +49,7 @@ public class JpaVetRepository implements PanacheRepository<Vet> {
 	}
 
 	@Override
+    @Audited
 	public void delete(Vet vet)  {
 		this.em.remove(this.em.contains(vet) ? vet : this.em.merge(vet));
 	}

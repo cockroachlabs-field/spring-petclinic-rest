@@ -21,6 +21,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import org.springframework.samples.petclinic.model.Specialty;
+import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -34,6 +35,7 @@ public class JpaSpecialtyRepository implements PanacheRepository<Specialty> {
     @PersistenceContext
     private EntityManager em;
 
+    @Audited
 	public void save(Specialty specialty) {
 		if (specialty.getId() == null) {
             this.em.persist(specialty);
@@ -43,6 +45,7 @@ public class JpaSpecialtyRepository implements PanacheRepository<Specialty> {
 	}
 
 	@Override
+    @Audited
 	public void delete(Specialty specialty) {
 		this.em.remove(this.em.contains(specialty) ? specialty : this.em.merge(specialty));
 		Integer specId = specialty.getId();

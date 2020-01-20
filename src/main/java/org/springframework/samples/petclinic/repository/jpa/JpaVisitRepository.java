@@ -23,6 +23,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.samples.petclinic.model.Visit;
+import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 
@@ -43,6 +44,7 @@ public class JpaVisitRepository implements PanacheRepository<Visit> {
     @PersistenceContext
     private EntityManager em;
 
+    @Audited
     public void save(Visit visit) {
         if (visit.getId() == null) {
             this.em.persist(visit);
@@ -52,6 +54,7 @@ public class JpaVisitRepository implements PanacheRepository<Visit> {
     }
 
     @SuppressWarnings("unchecked")
+    @Audited
     public List<Visit> findByPetId(long petId) {
         Query query = this.em.createQuery("SELECT v FROM Visit v where v.pet.id= :id");
         query.setParameter("id", petId);
@@ -59,6 +62,7 @@ public class JpaVisitRepository implements PanacheRepository<Visit> {
     }
     
 	@Override
+    @Audited
 	public void delete(Visit visit)  {
         this.em.remove(this.em.contains(visit) ? visit : this.em.merge(visit));
 	}
