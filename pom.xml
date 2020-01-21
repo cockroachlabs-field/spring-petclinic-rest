@@ -15,7 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <quarkus.version>1.0.0.Final</quarkus.version>
     <springfox-swagger.version>2.6.1</springfox-swagger.version>
-    <surefire.version>2.22.0</surefire.version>
+    <surefire-plugin.version>2.22.0</surefire-plugin.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -100,6 +100,15 @@
   </dependencies>
   <build>
     <plugins>
+    <plugin>
+    <artifactId>maven-surefire-plugin</artifactId>
+    <version>${surefire-plugin.version}</version>
+    <configuration>
+       <systemProperties>
+          <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+       </systemProperties>
+    </configuration>
+</plugin>
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
@@ -147,4 +156,12 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+        <id>native</id>
+        <properties>
+            <quarkus.package.type>native</quarkus.package.type>
+        </properties>
+    </profile>
+  </profiles>
 </project>
