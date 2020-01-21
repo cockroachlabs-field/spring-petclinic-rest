@@ -52,7 +52,6 @@ public class ClinicServiceImpl implements ClinicService {
     private JpaSpecialtyRepository specialtyRepository;
 	private JpaPetTypeRepository petTypeRepository;
 
-    @Inject
      public ClinicServiceImpl(
        		 JpaPetRepository petRepository,
     		 JpaVetRepository vetRepository,

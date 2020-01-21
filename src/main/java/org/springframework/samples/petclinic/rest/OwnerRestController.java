@@ -98,7 +98,7 @@ public class OwnerRestController {
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addOwner(@Valid Owner owner) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
+	public Response addOwner(@Valid Owner owner) { 
 		Set<ConstraintViolation<Owner>> errors = validator.validate(owner);
 		if (!errors.isEmpty() || (owner == null)) {
 			return Response.status(Status.BAD_REQUEST).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).entity(owner).build();
