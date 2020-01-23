@@ -33,6 +33,8 @@ import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
 
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 
@@ -44,6 +46,7 @@ import io.restassured.http.ContentType;
  * @author Vitaliy Fedoriv
  */
 @QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
 public class OwnerRestControllerTests {
 
     @Mock

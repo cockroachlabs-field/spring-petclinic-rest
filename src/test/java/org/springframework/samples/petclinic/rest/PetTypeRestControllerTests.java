@@ -16,9 +16,9 @@
 
 package org.springframework.samples.petclinic.rest;
 
-import static org.mockito.BDDMockito.given;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,8 @@ import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
 
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 
@@ -44,10 +46,12 @@ import io.restassured.http.ContentType;
  * @author Vitaliy Fedoriv
  */
 @QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
+
  public class PetTypeRestControllerTests {
 
     @Inject
-    private PetTypeRestController petTypeRestController;
+    PetTypeRestController petTypeRestController;
 
     @Mock
     private ClinicService clinicService;
