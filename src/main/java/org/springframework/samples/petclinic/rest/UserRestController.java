@@ -39,10 +39,10 @@ import org.springframework.samples.petclinic.service.UserService;
 public class UserRestController {
 
     @Inject
-    private UserService userService;
+    UserService userService;
 
     @Inject
-    private Validator validator;
+    Validator validator;
     
 	@RolesAllowed(Roles.ADMIN) 
     @POST

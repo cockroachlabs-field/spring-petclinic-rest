@@ -49,10 +49,10 @@ import org.springframework.samples.petclinic.service.ClinicService;
 public class OwnerRestController {
 
 	@Inject
-	private ClinicService clinicService;
+	ClinicService clinicService;
 
 	@Inject
-	private Validator validator;
+	Validator validator;
 
 	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET

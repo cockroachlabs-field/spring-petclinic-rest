@@ -45,12 +45,12 @@ import org.springframework.samples.petclinic.repository.jpa.JpaVisitRepository;
 @ApplicationScoped
 public class ClinicServiceImpl implements ClinicService {
 
-    private JpaPetRepository petRepository;
-    private JpaVetRepository vetRepository;
-    private JpaOwnerRepository ownerRepository;
-    private JpaVisitRepository visitRepository;
-    private JpaSpecialtyRepository specialtyRepository;
-	private JpaPetTypeRepository petTypeRepository;
+    JpaPetRepository petRepository;
+    JpaVetRepository vetRepository;
+    JpaOwnerRepository ownerRepository;
+    JpaVisitRepository visitRepository;
+    JpaSpecialtyRepository specialtyRepository;
+	JpaPetTypeRepository petTypeRepository;
 
      public ClinicServiceImpl(
        		 JpaPetRepository petRepository,

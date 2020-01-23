@@ -50,10 +50,10 @@ import org.springframework.samples.petclinic.security.Roles;
 public class PetRestController {
 
 	@Inject
-	private ClinicService clinicService;
+	ClinicService clinicService;
 
 	@Inject
-	private Validator validator;
+	Validator validator;
 
 	@RolesAllowed( "OWNER_ADMIN" ) 
 	@GET

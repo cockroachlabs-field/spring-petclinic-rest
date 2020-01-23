@@ -39,7 +39,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 @ApplicationScoped
 public class JpaPetRepository implements PanacheRepository<Pet> {
 	@Inject
-	private EntityManager em;
+	EntityManager em;
 	
 	@SuppressWarnings("unchecked")
 	@Audited

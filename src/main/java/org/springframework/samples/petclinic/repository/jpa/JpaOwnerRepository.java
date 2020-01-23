@@ -41,7 +41,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 public class JpaOwnerRepository implements PanacheRepository<Owner> {
 
     @Inject
-    private EntityManager em;
+    EntityManager em;
 
     /**
      * Important: in the current version of this method, we load Owners with all
@@ -63,9 +63,7 @@ public class JpaOwnerRepository implements PanacheRepository<Owner> {
         return query.getResultList();
     }
 
-    @Override
-    @Audited
-    public Owner findById(Long id) {
+    public Owner findById(long id) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
         // pets yet

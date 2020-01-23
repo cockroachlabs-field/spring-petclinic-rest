@@ -12,7 +12,7 @@ import org.springframework.samples.petclinic.repository.jpa.JpaUserRepository;
 public class UserServiceImpl implements UserService {
 
     @Inject
-    private JpaUserRepository userRepository;
+    JpaUserRepository userRepository;
 
     @Override
     @Transactional

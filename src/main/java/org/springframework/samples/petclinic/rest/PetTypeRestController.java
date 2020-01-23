@@ -46,10 +46,10 @@ import org.springframework.samples.petclinic.service.ClinicService;
 public class PetTypeRestController {
 
 	@Inject
-	private ClinicService clinicService;
+	ClinicService clinicService;
 
 	@Inject
-	private Validator validator;
+	Validator validator;
 
 	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN }) 
 	@GET
