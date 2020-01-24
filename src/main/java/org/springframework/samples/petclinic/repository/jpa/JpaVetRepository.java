@@ -22,7 +22,7 @@ import javax.persistence.EntityManager;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * JPA implementation of the {@link JpaVetRepository} interface.
@@ -34,7 +34,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
  * @author Vitaliy Fedoriv
  */
 @ApplicationScoped
-public class JpaVetRepository implements PanacheRepository<Vet> {
+public class JpaVetRepository implements PanacheRepositoryBase<Vet,Integer> {
 
     @Inject
     EntityManager em;

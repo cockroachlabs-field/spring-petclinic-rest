@@ -23,14 +23,14 @@ import javax.persistence.EntityManager;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 @ApplicationScoped
-public class JpaSpecialtyRepository implements PanacheRepository<Specialty> {
+public class JpaSpecialtyRepository implements PanacheRepositoryBase<Specialty,Integer> {
 	
     @Inject
     EntityManager em;

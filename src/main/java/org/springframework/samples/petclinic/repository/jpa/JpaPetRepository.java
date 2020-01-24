@@ -25,7 +25,7 @@ import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * JPA implementation of the {@link JpaPetRepository} interface.
@@ -37,7 +37,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
  * @author Vitaliy Fedoriv
  */
 @ApplicationScoped
-public class JpaPetRepository implements PanacheRepository<Pet> {
+public class JpaPetRepository implements PanacheRepositoryBase<Pet, Integer> {
 	@Inject
 	EntityManager em;
 	

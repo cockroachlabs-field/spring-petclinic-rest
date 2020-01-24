@@ -15,7 +15,7 @@ import io.quarkus.test.junit.QuarkusTest;
 public class UserServiceTests {
 
     @Inject
-    private UserService userService;
+    UserService userService;
 
     @Test
     public void shouldAddUser() throws Exception {

@@ -25,7 +25,7 @@ import javax.persistence.Query;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * JPA implementation of the ClinicService interface using EntityManager.
@@ -39,7 +39,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
  * @author Vitaliy Fedoriv
  */
 @ApplicationScoped
-public class JpaVisitRepository implements PanacheRepository<Visit> {
+public class JpaVisitRepository implements PanacheRepositoryBase<Visit,Integer> {
 
     @Inject
     EntityManager em;

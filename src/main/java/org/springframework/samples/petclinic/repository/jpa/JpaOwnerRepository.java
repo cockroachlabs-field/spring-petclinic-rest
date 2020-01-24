@@ -25,7 +25,7 @@ import javax.persistence.Query;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * JPA implementation of the {@link JpaOwnerRepository} interface.
@@ -38,7 +38,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
  */
 
 @ApplicationScoped
-public class JpaOwnerRepository implements PanacheRepository<Owner> {
+public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer> {
 
     @Inject
     EntityManager em;

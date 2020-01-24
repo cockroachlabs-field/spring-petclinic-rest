@@ -52,6 +52,7 @@ public class ClinicServiceImpl implements ClinicService {
     JpaSpecialtyRepository specialtyRepository;
 	JpaPetTypeRepository petTypeRepository;
 
+	@Inject
      public ClinicServiceImpl(
        		 JpaPetRepository petRepository,
     		 JpaVetRepository vetRepository,
@@ -81,7 +82,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Visit findVisitById(long visitId)  {
+	public Visit findVisitById(Integer visitId)  {
 		Visit visit = null;
 		try {
 			visit = visitRepository.findById(visitId);
@@ -106,7 +107,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Vet findVetById(long id)  {
+	public Vet findVetById(Integer id)  {
 		Vet vet = null;
 		try {
 			vet = vetRepository.findById(id);
@@ -149,7 +150,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public PetType findPetTypeById(long petTypeId) {
+	public PetType findPetTypeById(Integer petTypeId) {
 		PetType petType = null;
 		try {
 			petType = petTypeRepository.findById(petTypeId);
@@ -180,7 +181,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Specialty findSpecialtyById(long specialtyId) {
+	public Specialty findSpecialtyById(Integer specialtyId) {
 		Specialty specialty = null;
 		try {
 			specialty = specialtyRepository.findById(specialtyId);
@@ -217,7 +218,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Owner findOwnerById(long id)  {
+	public Owner findOwnerById(Integer id)  {
 		Owner owner = null;
 		try {
 			owner = ownerRepository.findById(id);
@@ -230,7 +231,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Pet findPetById(long id)  {
+	public Pet findPetById(Integer id)  {
 		Pet pet = null;
 		try {
 			pet = petRepository.findById(id);
@@ -277,7 +278,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
-	public Collection<Visit> findVisitsByPetId(long petId) {
+	public Collection<Visit> findVisitsByPetId(Integer petId) {
 		return visitRepository.findByPetId(petId);
 	}
 

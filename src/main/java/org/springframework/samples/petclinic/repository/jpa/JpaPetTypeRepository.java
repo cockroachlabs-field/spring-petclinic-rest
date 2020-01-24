@@ -27,14 +27,14 @@ import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 /**
  * @author Vitaliy Fedoriv
  *
  */
 @ApplicationScoped
-public class JpaPetTypeRepository implements PanacheRepository<PetType> {
+public class JpaPetTypeRepository implements PanacheRepositoryBase<PetType,Integer> {
 	
     @Inject
     EntityManager em;

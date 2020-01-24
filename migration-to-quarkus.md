@@ -48,6 +48,11 @@
 29. Migrated @ControllerAdvice as global exception handler to JAX-RS ExceptionMapper
 30. Converted PropertyComparator and MutableSortDefinition to Stream.sorted
 31. Replace Spring AOP with CDI Interceptor and adding the annotation to few methods
+32. Configuring properties file with attributes for Datasource
+33. Creating import.sql with SQL command to init the database and removed the rest of sql files
+34. As PanacheRepository takes Long as id, refactored to implement PanacheRepositoryBase<Entity, Integer>
+35. Removed properties for databases
+36. Created 2 import.sql to init the database (1 for prod 1 for test)
 
 ## TODO
 

@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Collection;
 import java.util.Date;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -76,13 +77,13 @@ import io.quarkus.test.junit.QuarkusTest;
 public class ClinicServiceTests {
 
     @Inject
-    protected ClinicService clinicService;
+    ClinicService clinicService;
 
-    @Inject 
-    protected JpaPetTypeRepository jpaPetTypeRepository;    
+    @Inject
+    JpaPetTypeRepository petTypeRepository;    
     
-    @Inject 
-    protected JpaVetRepository vetRepository;
+    @Inject
+    JpaVetRepository vetRepository;
 
     @Test
     public void shouldFindOwnersByLastName() {
@@ -162,7 +163,7 @@ public class ClinicServiceTests {
 
         Pet pet = new Pet();
         pet.setName("bowser");
-        pet.setType(jpaPetTypeRepository.findById(2L));
+        pet.setType(petTypeRepository.findById(2));
         pet.setBirthDate(new Date());
         owner6.addPet(pet);
         assertThat(owner6.getPets().size()).isEqualTo(found + 1);
@@ -192,7 +193,7 @@ public class ClinicServiceTests {
 
     @Test
     public void shouldFindVets() {
-        Vet vet = vetRepository.findById(3L);
+        Vet vet = vetRepository.findById(3);
         assertThat(vet.getLastName()).isEqualTo("Douglas");
         assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
         assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");

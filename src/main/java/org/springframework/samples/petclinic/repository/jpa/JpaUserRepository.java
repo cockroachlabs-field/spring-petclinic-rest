@@ -7,10 +7,10 @@ import javax.persistence.EntityManager;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.util.Audited;
 
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
 @ApplicationScoped
-public class JpaUserRepository implements PanacheRepository<User> {
+public class JpaUserRepository implements PanacheRepositoryBase<User,Integer> {
 
     @Inject
     EntityManager em;
