@@ -45,12 +45,12 @@ import org.springframework.samples.petclinic.repository.jpa.JpaVisitRepository;
 @ApplicationScoped
 public class ClinicServiceImpl implements ClinicService {
 
-    JpaPetRepository petRepository;
-    JpaVetRepository vetRepository;
-    JpaOwnerRepository ownerRepository;
-    JpaVisitRepository visitRepository;
-    JpaSpecialtyRepository specialtyRepository;
-	JpaPetTypeRepository petTypeRepository;
+    public JpaPetRepository petRepository;
+    public JpaVetRepository vetRepository;
+    public JpaOwnerRepository ownerRepository;
+    public JpaVisitRepository visitRepository;
+    public JpaSpecialtyRepository specialtyRepository;
+	public JpaPetTypeRepository petTypeRepository;
 
 	@Inject
      public ClinicServiceImpl(
@@ -64,7 +64,7 @@ public class ClinicServiceImpl implements ClinicService {
         this.vetRepository = vetRepository;
         this.ownerRepository = ownerRepository;
         this.visitRepository = visitRepository;
-        this.specialtyRepository = specialtyRepository; 
+        this.specialtyRepository = specialtyRepository;
 		this.petTypeRepository = petTypeRepository;
     }
 
@@ -207,7 +207,7 @@ public class ClinicServiceImpl implements ClinicService {
 	@Override
 	@Transactional
 	public void deleteSpecialty(Specialty specialty)  {
-		specialtyRepository.delete(specialty);
+		specialtyRepository.deleteWithVetAssign(specialty);
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class ClinicServiceImpl implements ClinicService {
 	public Owner findOwnerById(Integer id)  {
 		Owner owner = null;
 		try {
-			owner = ownerRepository.findById(id);
+			owner = ownerRepository.findByIdLeftJoin(id);
 		} catch (Exception e) {
 		// just ignore not found exceptions for Jdbc/Jpa realization
 			return null;
@@ -246,14 +246,14 @@ public class ClinicServiceImpl implements ClinicService {
 	@Transactional
 	public void savePet(Pet pet) {
 		petRepository.persist(pet);
-		
+
 	}
 
 	@Override
 	@Transactional
 	public void saveVisit(Visit visit)  {
 		visitRepository.save(visit);
-		
+
 	}
 
 	//@Override
@@ -267,7 +267,7 @@ public class ClinicServiceImpl implements ClinicService {
 	@Transactional
 	public void saveOwner(Owner owner)  {
 		ownerRepository.save(owner);
-		
+
 	}
 
 	@Override
@@ -287,8 +287,8 @@ public class ClinicServiceImpl implements ClinicService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	
+
+
 
 
 }

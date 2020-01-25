@@ -31,7 +31,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
  */
 @ApplicationScoped
 public class JpaSpecialtyRepository implements PanacheRepositoryBase<Specialty,Integer> {
-	
+
     @Inject
     EntityManager em;
 
@@ -44,9 +44,8 @@ public class JpaSpecialtyRepository implements PanacheRepositoryBase<Specialty,I
         }
 	}
 
-	@Override
-    @Audited
-	public void delete(Specialty specialty) {
+	@Audited
+	public void deleteWithVetAssign(Specialty specialty) {
 		this.em.remove(this.em.contains(specialty) ? specialty : this.em.merge(specialty));
 		Integer specId = specialty.getId();
 		this.em.createNativeQuery("DELETE FROM vet_specialties WHERE specialty_id=" + specId).executeUpdate();

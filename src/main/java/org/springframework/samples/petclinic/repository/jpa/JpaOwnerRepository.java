@@ -63,8 +63,7 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
         return query.getResultList();
     }
 
-    @Override
-    public Owner findById(Integer id) {
+    public Owner findByIdLeftJoin(Integer id) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
         // pets yet

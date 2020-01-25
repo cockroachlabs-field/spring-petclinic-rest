@@ -60,11 +60,5 @@ public class JpaVisitRepository implements PanacheRepositoryBase<Visit,Integer> 
         query.setParameter("id", petId);
         return query.getResultList();
     }
-    
-	@Override
-    @Audited
-	public void delete(Visit visit)  {
-        this.em.remove(this.em.contains(visit) ? visit : this.em.merge(visit));
-	}
 
 }

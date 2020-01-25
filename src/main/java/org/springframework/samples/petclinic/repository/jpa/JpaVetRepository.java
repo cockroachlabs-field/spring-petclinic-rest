@@ -48,11 +48,4 @@ public class JpaVetRepository implements PanacheRepositoryBase<Vet,Integer> {
         }
 	}
 
-	@Override
-    @Audited
-	public void delete(Vet vet)  {
-		this.em.remove(this.em.contains(vet) ? vet : this.em.merge(vet));
-	}
-
-
 }

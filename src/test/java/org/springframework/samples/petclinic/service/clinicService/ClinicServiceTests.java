@@ -23,6 +23,8 @@ import java.util.Date;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.h2.H2DatabaseTestResource;
 import org.junit.jupiter.api.Test;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
@@ -35,6 +37,7 @@ import org.springframework.samples.petclinic.repository.jpa.JpaVetRepository;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 import io.quarkus.test.junit.QuarkusTest;
+import org.springframework.samples.petclinic.service.ClinicServiceImpl;
 
 /**
  * <p>
@@ -73,17 +76,18 @@ import io.quarkus.test.junit.QuarkusTest;
  * @author Vitaliy Fedoriv
  */
 @QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
 public class ClinicServiceTests {
 
     @Inject
     ClinicService clinicService;
 
     @Inject
-    JpaPetTypeRepository petTypeRepository;    
-    
+    JpaPetTypeRepository petTypeRepository;
+
     @Inject
     JpaVetRepository vetRepository;
-
+/*
     @Test
     public void shouldFindOwnersByLastName() {
         Collection<Owner> owners = this.clinicService.findOwnerByLastName("Davis");
@@ -379,13 +383,16 @@ public class ClinicServiceTests {
 		}
         assertThat(owner).isNull();
     }
-
+*/
     @Test
     public void shouldFindPetTypeById(){
+        assertThat(this.clinicService).isNotNull();
+        assertThat(((ClinicServiceImpl) this.clinicService).petTypeRepository).isNotNull(); // This fails
+        assertThat(((ClinicServiceImpl) this.clinicService).petTypeRepository.listAll().size()).isGreaterThan(0);
     	PetType petType = this.clinicService.findPetTypeById(1);
     	assertThat(petType.getName()).isEqualTo("cat");
     }
-
+/*
     @Test
     public void shouldFindAllPetTypes(){
         Collection<PetType> petTypes = this.clinicService.findAllPetTypes();
@@ -497,6 +504,6 @@ public class ClinicServiceTests {
 		}
         assertThat(specialty).isNull();
     }
-
+*/
 
 }
