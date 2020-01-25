@@ -51,16 +51,17 @@
 32. Configuring properties file with attributes for Datasource
 33. Creating import.sql with SQL command to init the database and removed the rest of sql files
 34. As PanacheRepository takes Long as id, refactored to implement PanacheRepositoryBase<Entity, Integer>
-35. Removed properties for databases
+35. Removed properties for databases not used
 36. Created 2 import.sql to init the database (1 for prod 1 for test)
+37. Changed to Quarkus 999-SNAPSHOT (local build) because issue : https://github.com/quarkusio/quarkus/issues/6349
+38. Modified repository methods that save , and use persist instead of em.persist 
 
 ## TODO
 
 1. Cache
-2. DB Initial Schema
   
 ## NOT MIGRATED
 
-1. JDBC repositories
+1. JDBC repositories ( Use Agroal commands)
 2. Spring Data repositories
-3. JMX for the Audit
+3. JMX for the Audit ( Not available JMX on GraalVM )
