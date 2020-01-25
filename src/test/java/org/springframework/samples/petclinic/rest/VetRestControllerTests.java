@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Vet;
@@ -53,7 +54,7 @@ public class VetRestControllerTests {
 
     private List<Vet> vets;
 
-    @BeforeAll
+    @BeforeEach
     public void initVets(){
     	vets = new ArrayList<Vet>();
 

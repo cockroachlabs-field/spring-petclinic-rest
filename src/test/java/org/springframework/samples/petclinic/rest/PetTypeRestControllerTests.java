@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.PetType;
@@ -58,7 +59,7 @@ import io.restassured.http.ContentType;
 
     private List<PetType> petTypes;
 
-    @BeforeAll
+    @BeforeEach
     public void initPetTypes(){
     	petTypes = new ArrayList<PetType>();
 
@@ -204,7 +205,7 @@ import io.restassured.http.ContentType;
                 .body(equalTo(newPetTypeAsJSON))
                 .contentType(ContentType.JSON)
                 .statusCode(Status.BAD_REQUEST.getStatusCode());
-    
+
      }
 
     @Test

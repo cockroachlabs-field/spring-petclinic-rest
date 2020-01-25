@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Specialty;
@@ -53,7 +54,7 @@ public class SpecialtyRestControllerTests {
 
     private List<Specialty> specialties;
 
-    @BeforeAll
+    @BeforeEach
     public void initSpecialtys(){
     	specialties = new ArrayList<Specialty>();
 

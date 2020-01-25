@@ -31,6 +31,7 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
@@ -51,14 +52,13 @@ import io.restassured.http.ContentType;
  */
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
-
 public class VisitRestControllerTests {
     @Mock
     private ClinicService clinicService;
 
     private List<Visit> visits;
 
-    @BeforeAll
+    @BeforeEach
     public void initVisits(){
     	visits = new ArrayList<Visit>();
 
@@ -265,7 +265,7 @@ public class VisitRestControllerTests {
 		  .delete("/api/visits/-1")
 		.then()
 			.body(equalTo(newVisitAsJSON))
-			.statusCode(Status.NOT_FOUND.getStatusCode())			
+			.statusCode(Status.NOT_FOUND.getStatusCode())
 			.contentType(ContentType.JSON);
 
     }

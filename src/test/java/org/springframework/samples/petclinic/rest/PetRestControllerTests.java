@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response.Status;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
@@ -62,7 +63,7 @@ public class PetRestControllerTests {
 
     private List<Pet> pets;
 
-    @BeforeAll
+    @BeforeEach
     public void initPets(){
     	pets = new ArrayList<Pet>();
 
