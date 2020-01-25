@@ -18,7 +18,7 @@ public class JpaUserRepository implements PanacheRepositoryBase<User,Integer> {
     @Audited
     public void save(User user)  {
         if (this.em.find(User.class, user.getUsername()) == null) {
-            this.em.persist(user);
+            persist(user);
         } else {
             this.em.merge(user);
         }

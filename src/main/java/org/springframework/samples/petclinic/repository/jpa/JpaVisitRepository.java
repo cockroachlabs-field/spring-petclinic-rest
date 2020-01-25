@@ -47,7 +47,7 @@ public class JpaVisitRepository implements PanacheRepositoryBase<Visit,Integer> 
     @Audited
     public void save(Visit visit) {
         if (visit.getId() == null) {
-            this.em.persist(visit);
+            persist(visit);
         } else {
             this.em.merge(visit);
         }

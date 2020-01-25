@@ -42,7 +42,7 @@ public class JpaPetTypeRepository implements PanacheRepositoryBase<PetType,Integ
     @Audited
 	public void save(PetType petType)  {
 		if (petType.getId() == null) {
-            this.em.persist(petType);
+            persist(petType);
         } else {
             this.em.merge(petType);
         }

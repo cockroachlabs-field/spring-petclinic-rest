@@ -42,7 +42,7 @@ public class JpaVetRepository implements PanacheRepositoryBase<Vet,Integer> {
     @Audited
 	public void save(Vet vet)  {
         if (vet.getId() == null) {
-            this.em.persist(vet);
+            persist(vet);
         } else {
             this.em.merge(vet);
         }

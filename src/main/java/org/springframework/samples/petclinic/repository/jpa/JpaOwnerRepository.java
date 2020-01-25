@@ -63,7 +63,8 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
         return query.getResultList();
     }
 
-    public Owner findById(long id) {
+    @Override
+    public Owner findById(Integer id) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
         // pets yet
@@ -76,7 +77,7 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
     @Audited
     public void save(Owner owner) {
         if (owner.getId() == null) {
-            this.em.persist(owner);
+            persist(owner);
         } else {
             this.em.merge(owner);
         }
