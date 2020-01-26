@@ -54,7 +54,9 @@
 35. Removed properties for databases not used
 36. Created 2 import-test.sql to init the database (1 for prod 1 for test)
 37. Changed to Quarkus 999-SNAPSHOT (local build) because issue : https://github.com/quarkusio/quarkus/issues/6349
-38. Modified repository methods that save , and use persist instead of em.persist 
+38. Modified repository methods that save , and use persist instead of em.persist
+39. Added @Consumes to all resources PUT/POST
+40. replace resteasy-jsonb to resteasy-jackson  
 
 ## TODO
 
