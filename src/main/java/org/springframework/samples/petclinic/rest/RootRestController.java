@@ -35,7 +35,7 @@ public class RootRestController {
 	@GET
 	@Path("/")
 	public Response redirectToSwagger() throws IOException, URISyntaxException {
-		return Response.temporaryRedirect(new URI("/petclinic/swagger-ui.html")).build();
+		return Response.temporaryRedirect(new URI("/swagger-ui")).build();
 	}
 
 }

@@ -55,7 +55,7 @@ public class PetRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@GET
 	@Path("/{petId}")
 	@Produces( MediaType.APPLICATION_JSON)
@@ -67,9 +67,9 @@ public class PetRestController {
 		return Response.ok(pet).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@GET
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getPets(){
 		Collection<Pet> pets = this.clinicService.findAllPets();
@@ -79,7 +79,7 @@ public class PetRestController {
 		return Response.ok(pets).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@GET
 	@Path("/pettypes")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -87,9 +87,9 @@ public class PetRestController {
 		return Response.ok(this.clinicService.findPetTypes()).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@POST
-	@Path( "")
+	@Path( "/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response addPet(@Valid Pet pet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
@@ -101,7 +101,7 @@ public class PetRestController {
 		return Response.status(Status.CREATED).entity(pet).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@PUT
 	@Path("/{petId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -122,7 +122,7 @@ public class PetRestController {
 		return Response.noContent().entity(currentPet).build();
 	}
 
-	@RolesAllowed( Roles.OWNER_ADMIN ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@DELETE
 	@Path("/{petId}")
 	@Produces (MediaType.APPLICATION_JSON)

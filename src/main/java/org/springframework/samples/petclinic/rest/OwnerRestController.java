@@ -38,6 +38,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Owner;
+import org.springframework.samples.petclinic.security.Roles;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 /**
@@ -54,7 +55,7 @@ public class OwnerRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN)
 	@GET
 	@Path("/*/lastname/{lastName}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -69,9 +70,9 @@ public class OwnerRestController {
 		return Response.ok(owners).status(Status.OK).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@GET
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getOwners() {
 		Collection<Owner> owners = this.clinicService.findAllOwners();
@@ -81,7 +82,7 @@ public class OwnerRestController {
 		return Response.ok(owners).status(Status.OK).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN)
 	@GET
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -94,11 +95,11 @@ public class OwnerRestController {
 		return Response.ok(owner).status(Status.OK).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@POST
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response addOwner(@Valid Owner owner) { 
+	public Response addOwner(@Valid Owner owner) {
 		Set<ConstraintViolation<Owner>> errors = validator.validate(owner);
 		if (!errors.isEmpty() || (owner == null)) {
 			return Response.status(Status.BAD_REQUEST).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).entity(owner).build();
@@ -108,12 +109,12 @@ public class OwnerRestController {
 		return Response.ok(owner).status(Status.CREATED).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@PUT
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateOwner(@PathParam("ownerId") int ownerId, @Valid Owner owner) { // ,BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
-		Set<ConstraintViolation<Owner>> errors = validator.validate(owner); 
+		Set<ConstraintViolation<Owner>> errors = validator.validate(owner);
 		if (!errors.isEmpty() || (owner == null)) {
 			return Response.status(Status.BAD_REQUEST).entity(owner).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
 		}
@@ -130,7 +131,7 @@ public class OwnerRestController {
 		return Response.status(Status.NO_CONTENT).build();
 	}
 
-	@RolesAllowed( "OWNER_ADMIN" ) 
+	@RolesAllowed( Roles.OWNER_ADMIN )
 	@DELETE
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)

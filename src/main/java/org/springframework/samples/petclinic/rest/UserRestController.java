@@ -43,10 +43,10 @@ public class UserRestController {
 
     @Inject
     Validator validator;
-    
-	@RolesAllowed(Roles.ADMIN) 
+
+	@RolesAllowed(Roles.ADMIN)
     @POST
-    @Path("")
+    @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     public Response addOwner( @Valid User user) throws Exception { // }, BindingResult bindingResult) throws Exception {
 		Set<ConstraintViolation<User>> errors = validator.validate(user);
