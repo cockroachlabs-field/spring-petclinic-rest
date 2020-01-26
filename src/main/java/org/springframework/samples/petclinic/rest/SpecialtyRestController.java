@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -56,7 +57,7 @@ public class SpecialtyRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -69,7 +70,7 @@ public class SpecialtyRestController {
 		return Response.ok(specialties).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -81,10 +82,11 @@ public class SpecialtyRestController {
 		return Response.ok(specialty).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@POST
 	@Path("")
 	@Produces( MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response addSpecialty( @Valid Specialty specialty) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<Specialty>> errors = validator.validate(specialty);
 		if (!errors.isEmpty() || (specialty == null)) {
@@ -95,10 +97,11 @@ public class SpecialtyRestController {
 		return Response.status(Status.CREATED).entity(specialty).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@PUT
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response updateSpecialty(@PathParam("specialtyId") int specialtyId,@Valid Specialty specialty) { //}, BindingResult bindingResult){
 		Set<ConstraintViolation<Specialty>> errors = validator.validate(specialty);
 		if (!errors.isEmpty() || (specialty == null)) {
@@ -113,7 +116,7 @@ public class SpecialtyRestController {
 		return Response.noContent().entity(currentSpecialty).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@DELETE
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)

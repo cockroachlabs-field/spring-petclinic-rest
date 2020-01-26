@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -51,7 +52,7 @@ public class PetTypeRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN }) 
+	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN })
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -64,7 +65,7 @@ public class PetTypeRestController {
 		return Response.ok(petTypes).build();
 	}
 
-	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN }) 
+	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN })
 	@GET
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -76,10 +77,11 @@ public class PetTypeRestController {
 		return Response.ok(petType).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response addPetType(@Valid PetType petType) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<PetType>> errors = validator.validate(petType);
 		if (!errors.isEmpty() || (petType == null)) {
@@ -90,10 +92,11 @@ public class PetTypeRestController {
 		return Response.status(Status.CREATED).entity(petType).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@PUT
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response updatePetType(@PathParam("petTypeId") int petTypeId, @Valid PetType petType) { //}, BindingResult bindingResult){
 		Set<ConstraintViolation<PetType>> errors = validator.validate(petType);
 		if (!errors.isEmpty() || (petType == null)) {
@@ -108,7 +111,7 @@ public class PetTypeRestController {
 		return Response.noContent().entity(currentPetType).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@DELETE
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)

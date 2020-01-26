@@ -26,6 +26,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -54,6 +55,21 @@ public class PetRestController {
 
 	@Inject
 	Validator validator;
+
+    @RolesAllowed( Roles.OWNER_ADMIN )
+    @POST
+    @Path( "/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response addPet(@Valid Pet pet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
+        Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
+        if (!errors.isEmpty() || (pet == null)) {
+            return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
+        }
+        this.clinicService.savePet(pet);
+        // headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri()); //TODO
+        return Response.status(Status.CREATED).entity(pet).build();
+    }
 
 	@RolesAllowed( Roles.OWNER_ADMIN )
 	@GET
@@ -88,24 +104,11 @@ public class PetRestController {
 	}
 
 	@RolesAllowed( Roles.OWNER_ADMIN )
-	@POST
-	@Path( "/")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response addPet(@Valid Pet pet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
-		if (!errors.isEmpty() || (pet == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
-		this.clinicService.savePet(pet);
-		// headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri()); //TODO
-		return Response.status(Status.CREATED).entity(pet).build();
-	}
-
-	@RolesAllowed( Roles.OWNER_ADMIN )
 	@PUT
 	@Path("/{petId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updatePet(@PathParam("petId") int petId, @Valid Pet pet) { //, BindingResult bindingResult){
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updatePet(@PathParam("petId") int petId, @Valid Pet pet) { //, BindingResult bindingResult){
 		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
 		if (!errors.isEmpty() || (pet == null)) {
 			return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();

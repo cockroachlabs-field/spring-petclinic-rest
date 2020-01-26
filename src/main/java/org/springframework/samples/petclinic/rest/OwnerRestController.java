@@ -26,6 +26,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -86,6 +87,7 @@ public class OwnerRestController {
 	@GET
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response getOwner(@PathParam("ownerId") int ownerId) {
 		Owner owner = null;
 		owner = this.clinicService.findOwnerById(ownerId);
@@ -113,6 +115,7 @@ public class OwnerRestController {
 	@PUT
 	@Path("/{ownerId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response updateOwner(@PathParam("ownerId") int ownerId, @Valid Owner owner) { // ,BindingResult bindingResult, UriComponentsBuilder ucBuilder) {
 		Set<ConstraintViolation<Owner>> errors = validator.validate(owner);
 		if (!errors.isEmpty() || (owner == null)) {

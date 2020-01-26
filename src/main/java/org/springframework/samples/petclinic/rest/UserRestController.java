@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -48,6 +49,7 @@ public class UserRestController {
     @POST
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
     public Response addOwner( @Valid User user) throws Exception { // }, BindingResult bindingResult) throws Exception {
 		Set<ConstraintViolation<User>> errors = validator.validate(user);
 		if (!errors.isEmpty() || (user == null)) {

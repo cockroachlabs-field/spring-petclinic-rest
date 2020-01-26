@@ -27,6 +27,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -57,7 +58,7 @@ public class VisitRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed(Roles.OWNER_ADMIN) 
+	@RolesAllowed(Roles.OWNER_ADMIN)
 	@GET
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -70,7 +71,7 @@ public class VisitRestController {
 		return Response.ok(visits).build();
 	}
 
-	@RolesAllowed(Roles.OWNER_ADMIN) 
+	@RolesAllowed(Roles.OWNER_ADMIN)
 	@GET
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -82,10 +83,11 @@ public class VisitRestController {
 		return Response.ok(visit).build();
 	}
 
-	@RolesAllowed(Roles.OWNER_ADMIN) 
+	@RolesAllowed(Roles.OWNER_ADMIN)
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response addVisit(@Valid Visit visit) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
 		if (!errors.isEmpty() || (visit == null)) {
@@ -96,10 +98,11 @@ public class VisitRestController {
 		return Response.status(Status.CREATED).entity(visit).build();
 	}
 
-	@RolesAllowed(Roles.OWNER_ADMIN) 
+	@RolesAllowed(Roles.OWNER_ADMIN)
 	@PUT
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response updateVisit(@PathParam("visitId") int visitId, @Valid Visit visit) { //}, BindingResult bindingResult){
 		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
 		if (!errors.isEmpty() || (visit == null)) {
@@ -116,7 +119,7 @@ public class VisitRestController {
 		return Response.noContent().entity(currentVisit).build();
 	}
 
-	@RolesAllowed(Roles.OWNER_ADMIN) 
+	@RolesAllowed(Roles.OWNER_ADMIN)
 	@DELETE
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON)

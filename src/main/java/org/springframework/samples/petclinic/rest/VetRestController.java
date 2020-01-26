@@ -26,6 +26,7 @@ import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import javax.validation.Validator;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -56,7 +57,7 @@ public class VetRestController {
 	@Inject
 	Validator validator;
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
 	@Path("")
 	@Produces ( MediaType.APPLICATION_JSON)
@@ -69,7 +70,7 @@ public class VetRestController {
 		return Response.ok(vets).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -81,10 +82,11 @@ public class VetRestController {
 		return Response.ok(vet).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@POST
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response addVet(@Valid Vet vet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
 		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
 		if (!errors.isEmpty() || (vet == null)) {
@@ -95,10 +97,11 @@ public class VetRestController {
 		return Response.status(Status.CREATED).entity(vet).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@PUT
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response updateVet(@PathParam("vetId") int vetId, @Valid Vet vet) { //}, BindingResult bindingResult){
 		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
 		if (!errors.isEmpty() || (vet == null)) {
@@ -118,7 +121,7 @@ public class VetRestController {
 		return Response.noContent().entity(currentVet).build();
 	}
 
-	@RolesAllowed(Roles.VET_ADMIN) 
+	@RolesAllowed(Roles.VET_ADMIN)
 	@DELETE
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
