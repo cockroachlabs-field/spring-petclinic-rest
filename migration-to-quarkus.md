@@ -49,10 +49,10 @@
 30. Converted PropertyComparator and MutableSortDefinition to Stream.sorted
 31. Replace Spring AOP with CDI Interceptor and adding the annotation to few methods
 32. Configuring properties file with attributes for Datasource
-33. Creating import.sql with SQL command to init the database and removed the rest of sql files
+33. Creating import-test.sql with SQL command to init the database and removed the rest of sql files
 34. As PanacheRepository takes Long as id, refactored to implement PanacheRepositoryBase<Entity, Integer>
 35. Removed properties for databases not used
-36. Created 2 import.sql to init the database (1 for prod 1 for test)
+36. Created 2 import-test.sql to init the database (1 for prod 1 for test)
 37. Changed to Quarkus 999-SNAPSHOT (local build) because issue : https://github.com/quarkusio/quarkus/issues/6349
 38. Modified repository methods that save , and use persist instead of em.persist 
 

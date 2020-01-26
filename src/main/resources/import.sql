@@ -146,17 +146,19 @@ INSERT INTO pets VALUES (6, 'George', '2000-01-20', 4, 5) ON CONFLICT DO NOTHING
 INSERT INTO pets VALUES (7, 'Samantha', '1995-09-04', 1, 6) ON CONFLICT DO NOTHING;
 INSERT INTO pets VALUES (8, 'Max', '1995-09-04', 1, 6) ON CONFLICT DO NOTHING;
 INSERT INTO pets VALUES (9, 'Lucky', '1999-08-06', 5, 7) ON CONFLICT DO NOTHING;
+
+
 INSERT INTO pets VALUES (10, 'Mulligan', '1997-02-24', 2, 8) ON CONFLICT DO NOTHING;
 INSERT INTO pets VALUES (11, 'Freddy', '2000-03-09', 5, 9) ON CONFLICT DO NOTHING;
 INSERT INTO pets VALUES (12, 'Lucky', '2000-06-24', 2, 10) ON CONFLICT DO NOTHING;
 INSERT INTO pets VALUES (13, 'Sly', '2002-06-08', 1, 10) ON CONFLICT DO NOTHING;
 
-INSERT INTO visits VALUES (1, 7, '2010-03-04', 'rabies shot') ON CONFLICT DO NOTHING;
-INSERT INTO visits VALUES (2, 8, '2011-03-04', 'rabies shot') ON CONFLICT DO NOTHING;
-INSERT INTO visits VALUES (3, 8, '2009-06-04', 'neutered') ON CONFLICT DO NOTHING;
-INSERT INTO visits VALUES (4, 7, '2008-09-04', 'spayed') ON CONFLICT DO NOTHING;
+INSERT INTO visits (id, pet_id, visit_date, description) VALUES  (1, 7, '2010-03-04', 'rabies shot') ON CONFLICT DO NOTHING;
+INSERT INTO visits (id, pet_id, visit_date, description) VALUES (2, 8, '2011-03-04', 'rabies shot') ON CONFLICT DO NOTHING;
+INSERT INTO visits (id, pet_id, visit_date, description) VALUES (3, 8, '2009-06-04', 'neutered') ON CONFLICT DO NOTHING;
+INSERT INTO visits (id, pet_id, visit_date, description) VALUES (4, 7, '2008-09-04', 'spayed') ON CONFLICT DO NOTHING;
 
-INSERT INTO users(username,password,enabled) VALUES ('admin','{noop}admin', true) ON CONFLICT DO NOTHING;
+INSERT INTO users(username,password,enabled) VALUES ('admin','admin', true) ON CONFLICT DO NOTHING;
 
 INSERT INTO roles (username, role) VALUES ('admin', 'ROLE_OWNER_ADMIN') ON CONFLICT DO NOTHING;
 INSERT INTO roles (username, role) VALUES ('admin', 'ROLE_VET_ADMIN') ON CONFLICT DO NOTHING;
