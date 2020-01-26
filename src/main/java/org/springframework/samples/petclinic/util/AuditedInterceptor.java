@@ -1,8 +1,14 @@
 package org.springframework.samples.petclinic.util;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -13,21 +19,10 @@ import javax.interceptor.InvocationContext;
 @Audited
 @Interceptor
 public class AuditedInterceptor {
-    private static Long calls_duration = 0L;
-    private static Long calls_count = 0L;
-
     @AroundInvoke
     public Object auditMethod(InvocationContext ctx) throws Exception {
-        LocalDateTime init = LocalDateTime.now();
-
         Object result = ctx.proceed();
-
-        synchronized(this) {
-          calls_duration += Duration.between(init, LocalDateTime.now()).toMillis();
-          calls_count ++;
-        }
-
         return result;
     }
-    
+
 }

@@ -34,6 +34,7 @@ import org.springframework.samples.petclinic.repository.jpa.JpaPetTypeRepository
 import org.springframework.samples.petclinic.repository.jpa.JpaSpecialtyRepository;
 import org.springframework.samples.petclinic.repository.jpa.JpaVetRepository;
 import org.springframework.samples.petclinic.repository.jpa.JpaVisitRepository;
+import org.springframework.samples.petclinic.util.Audited;
 
 /**
  * Mostly used as a facade for all Petclinic controllers
@@ -70,6 +71,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
+    @Audited
 	public Collection<Pet> findAllPets()  {
 		return petRepository.listAll();
 	}
@@ -138,6 +140,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	@Override
 	@Transactional
+    @Audited
 	public Collection<Owner> findAllOwners()  {
 		return ownerRepository.listAll();
 	}

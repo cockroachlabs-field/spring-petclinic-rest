@@ -101,6 +101,7 @@ public class OwnerRestController {
 	@POST
 	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
 	public Response addOwner(@Valid Owner owner) {
 		Set<ConstraintViolation<Owner>> errors = validator.validate(owner);
 		if (!errors.isEmpty() || (owner == null)) {
