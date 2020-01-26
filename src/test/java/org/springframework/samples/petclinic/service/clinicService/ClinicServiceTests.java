@@ -87,7 +87,7 @@ public class ClinicServiceTests {
 
     @Inject
     JpaVetRepository vetRepository;
-/*
+
     @Test
     public void shouldFindOwnersByLastName() {
         Collection<Owner> owners = this.clinicService.findOwnerByLastName("Davis");
@@ -383,16 +383,13 @@ public class ClinicServiceTests {
 		}
         assertThat(owner).isNull();
     }
-*/
+
     @Test
     public void shouldFindPetTypeById(){
-        assertThat(this.clinicService).isNotNull();
-        assertThat(((ClinicServiceImpl) this.clinicService).petTypeRepository).isNotNull(); // This fails
-        assertThat(((ClinicServiceImpl) this.clinicService).petTypeRepository.listAll().size()).isGreaterThan(0);
     	PetType petType = this.clinicService.findPetTypeById(1);
     	assertThat(petType.getName()).isEqualTo("cat");
     }
-/*
+
     @Test
     public void shouldFindAllPetTypes(){
         Collection<PetType> petTypes = this.clinicService.findAllPetTypes();
@@ -504,6 +501,6 @@ public class ClinicServiceTests {
 		}
         assertThat(specialty).isNull();
     }
-*/
+
 
 }
