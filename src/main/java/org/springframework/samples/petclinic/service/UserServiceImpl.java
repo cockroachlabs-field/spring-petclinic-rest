@@ -4,6 +4,9 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Role;
 import org.springframework.samples.petclinic.model.User;
 import org.springframework.samples.petclinic.repository.jpa.JpaUserRepository;
@@ -16,6 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    @Counted(name="accessDB",reusable = true)
+    @Timed(name="processDB", unit= MetricUnits.MILLISECONDS, reusable = true)
+
     public void saveUser(User user) throws Exception {
 
         if(user.getRoles() == null || user.getRoles().isEmpty()) {
