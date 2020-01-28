@@ -19,8 +19,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Vet;
-import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -39,7 +41,6 @@ public class JpaVetRepository implements PanacheRepositoryBase<Vet,Integer> {
     @Inject
     EntityManager em;
 
-    @Audited
 	public void save(Vet vet)  {
         if (vet.getId() == null) {
             persist(vet);

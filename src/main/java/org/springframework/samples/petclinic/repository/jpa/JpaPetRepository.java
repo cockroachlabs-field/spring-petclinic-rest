@@ -21,9 +21,11 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
-import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -40,14 +42,12 @@ import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 public class JpaPetRepository implements PanacheRepositoryBase<Pet, Integer> {
 	@Inject
 	EntityManager em;
-	
+
 	@SuppressWarnings("unchecked")
-	@Audited
     public List<PetType> findPetTypes() {
         return this.em.createQuery("SELECT ptype FROM PetType ptype ORDER BY ptype.name").getResultList();
     }
 
-    @Audited
 	public void delete(Pet pet) {
 		//this.em.remove(this.em.contains(pet) ? pet : this.em.merge(pet));
 		String petId = pet.getId().toString();

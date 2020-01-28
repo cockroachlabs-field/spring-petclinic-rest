@@ -20,8 +20,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Specialty;
-import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -35,7 +37,6 @@ public class JpaSpecialtyRepository implements PanacheRepositoryBase<Specialty,I
     @Inject
     EntityManager em;
 
-    @Audited
 	public void save(Specialty specialty) {
 		if (specialty.getId() == null) {
             this.em.persist(specialty);
@@ -44,7 +45,6 @@ public class JpaSpecialtyRepository implements PanacheRepositoryBase<Specialty,I
         }
 	}
 
-	@Audited
 	public void deleteWithVetAssign(Specialty specialty) {
 		this.em.remove(this.em.contains(specialty) ? specialty : this.em.merge(specialty));
 		Integer specId = specialty.getId();

@@ -22,8 +22,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Visit;
-import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -44,7 +46,6 @@ public class JpaVisitRepository implements PanacheRepositoryBase<Visit,Integer> 
     @Inject
     EntityManager em;
 
-    @Audited
     public void save(Visit visit) {
         if (visit.getId() == null) {
             persist(visit);
@@ -54,7 +55,6 @@ public class JpaVisitRepository implements PanacheRepositoryBase<Visit,Integer> 
     }
 
     @SuppressWarnings("unchecked")
-    @Audited
     public List<Visit> findByPetId(long petId) {
         Query query = this.em.createQuery("SELECT v FROM Visit v where v.pet.id= :id");
         query.setParameter("id", petId);

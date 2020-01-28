@@ -22,8 +22,10 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.springframework.samples.petclinic.model.Owner;
-import org.springframework.samples.petclinic.util.Audited;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 
@@ -52,7 +54,6 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
      * and using {@link OpenSessionInViewFilter}
      */
     @SuppressWarnings("unchecked")
-    @Audited
     public Collection<Owner> findByLastName(String lastName) {
         // using 'join fetch' because a single query should load both owners and pets
         // using 'left join fetch' because it might happen that an owner does not have
@@ -73,7 +74,6 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
         return (Owner) query.getSingleResult();
     }
 
-    @Audited
     public void save(Owner owner) {
         if (owner.getId() == null) {
             persist(owner);
@@ -84,7 +84,6 @@ public class JpaOwnerRepository implements PanacheRepositoryBase<Owner, Integer>
     }
 
     @Override
-    @Audited
     public void delete(Owner owner) {
         this.em.remove(this.em.contains(owner) ? owner : this.em.merge(owner));
     }
