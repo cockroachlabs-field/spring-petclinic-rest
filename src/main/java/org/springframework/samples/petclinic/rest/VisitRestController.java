@@ -55,9 +55,6 @@ public class VisitRestController {
 	@Inject
 	ClinicService clinicService;
 
-	@Inject
-	Validator validator;
-
 	@RolesAllowed(Roles.OWNER_ADMIN)
 	@GET
 	@Path("")
@@ -88,13 +85,8 @@ public class VisitRestController {
 	@Path("")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response addVisit(@Valid Visit visit) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
-		if (!errors.isEmpty() || (visit == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(visit).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response addVisit(@Valid Visit visit) {
 		this.clinicService.saveVisit(visit);
-		// headers.setLocation(ucBuilder.path("/api/visits/{id}").buildAndExpand(visit.getId()).toUri()); // TODO
 		return Response.status(Status.CREATED).entity(visit).build();
 	}
 
@@ -103,11 +95,7 @@ public class VisitRestController {
 	@Path("/{visitId}")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response updateVisit(@PathParam("visitId") int visitId, @Valid Visit visit) { //}, BindingResult bindingResult){
-		Set<ConstraintViolation<Visit>> errors = validator.validate(visit);
-		if (!errors.isEmpty() || (visit == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(visit).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response updateVisit(@PathParam("visitId") int visitId, @Valid Visit visit) {
 		Visit currentVisit = this.clinicService.findVisitById(visitId);
 		if(currentVisit == null){
 			return Response.status(Status.NOT_FOUND).build();

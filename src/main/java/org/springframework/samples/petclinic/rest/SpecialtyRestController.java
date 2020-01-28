@@ -54,9 +54,6 @@ public class SpecialtyRestController {
 	@Inject
 	ClinicService clinicService;
 
-	@Inject
-	Validator validator;
-
 	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
 	@Path("")
@@ -87,13 +84,8 @@ public class SpecialtyRestController {
 	@Path("")
 	@Produces( MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response addSpecialty( @Valid Specialty specialty) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		Set<ConstraintViolation<Specialty>> errors = validator.validate(specialty);
-		if (!errors.isEmpty() || (specialty == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(specialty).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response addSpecialty( @Valid Specialty specialty) {
 		this.clinicService.saveSpecialty(specialty);
-		// headers.setLocation(ucBuilder.path("/api/specialtys/{id}").buildAndExpand(specialty.getId()).toUri()); //TODO
 		return Response.status(Status.CREATED).entity(specialty).build();
 	}
 
@@ -102,11 +94,7 @@ public class SpecialtyRestController {
 	@Path("/{specialtyId}")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response updateSpecialty(@PathParam("specialtyId") int specialtyId,@Valid Specialty specialty) { //}, BindingResult bindingResult){
-		Set<ConstraintViolation<Specialty>> errors = validator.validate(specialty);
-		if (!errors.isEmpty() || (specialty == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(specialty).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response updateSpecialty(@PathParam("specialtyId") int specialtyId,@Valid Specialty specialty) {
 		Specialty currentSpecialty = this.clinicService.findSpecialtyById(specialtyId);
 		if(currentSpecialty == null){
 			return Response.status(Status.NOT_FOUND).build();

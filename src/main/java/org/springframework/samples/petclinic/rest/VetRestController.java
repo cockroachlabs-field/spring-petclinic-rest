@@ -54,12 +54,9 @@ public class VetRestController {
 	@Inject
 	ClinicService clinicService;
 
-	@Inject
-	Validator validator;
-
 	@RolesAllowed(Roles.VET_ADMIN)
 	@GET
-	@Path("")
+	@Path("/")
 	@Produces ( MediaType.APPLICATION_JSON)
 	public Response getAllVets(){
 		Collection<Vet> vets = new ArrayList<Vet>();
@@ -84,16 +81,11 @@ public class VetRestController {
 
 	@RolesAllowed(Roles.VET_ADMIN)
 	@POST
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response addVet(@Valid Vet vet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
-		if (!errors.isEmpty() || (vet == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(vet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response addVet(@Valid Vet vet) {
 		this.clinicService.saveVet(vet);
-		// headers.setLocation(ucBuilder.path("/api/vets/{id}").buildAndExpand(vet.getId()).toUri()); //TODO
 		return Response.status(Status.CREATED).entity(vet).build();
 	}
 
@@ -102,11 +94,7 @@ public class VetRestController {
 	@Path("/{vetId}")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response updateVet(@PathParam("vetId") int vetId, @Valid Vet vet) { //}, BindingResult bindingResult){
-		Set<ConstraintViolation<Vet>> errors = validator.validate(vet);
-		if (!errors.isEmpty() || (vet == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(vet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response updateVet(@PathParam("vetId") int vetId, @Valid Vet vet) {
 		Vet currentVet = this.clinicService.findVetById(vetId);
 		if(currentVet == null){
 			return Response.status(Status.NOT_FOUND).build();

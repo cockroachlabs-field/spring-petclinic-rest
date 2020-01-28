@@ -49,12 +49,9 @@ public class PetTypeRestController {
 	@Inject
 	ClinicService clinicService;
 
-	@Inject
-	Validator validator;
-
 	@RolesAllowed( {Roles.OWNER_ADMIN, Roles.VET_ADMIN })
 	@GET
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllPetTypes(){
 		Collection<PetType> petTypes = new ArrayList<PetType>();
@@ -79,16 +76,11 @@ public class PetTypeRestController {
 
 	@RolesAllowed(Roles.VET_ADMIN)
 	@POST
-	@Path("")
+	@Path("/")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response addPetType(@Valid PetType petType) { //}, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-		Set<ConstraintViolation<PetType>> errors = validator.validate(petType);
-		if (!errors.isEmpty() || (petType == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(petType).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response addPetType(@Valid PetType petType) {
 		this.clinicService.savePetType(petType);
-		// headers.setLocation(ucBuilder.path("/api/pettypes/{id}").buildAndExpand(petType.getId()).toUri()); //TODO
 		return Response.status(Status.CREATED).entity(petType).build();
 	}
 
@@ -97,11 +89,7 @@ public class PetTypeRestController {
 	@Path("/{petTypeId}")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-	public Response updatePetType(@PathParam("petTypeId") int petTypeId, @Valid PetType petType) { //}, BindingResult bindingResult){
-		Set<ConstraintViolation<PetType>> errors = validator.validate(petType);
-		if (!errors.isEmpty() || (petType == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(petType).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
+	public Response updatePetType(@PathParam("petTypeId") int petTypeId, @Valid PetType petType) {
 		PetType currentPetType = this.clinicService.findPetTypeById(petTypeId);
 		if(currentPetType == null){
 			return Response.status(Status.NOT_FOUND).build();

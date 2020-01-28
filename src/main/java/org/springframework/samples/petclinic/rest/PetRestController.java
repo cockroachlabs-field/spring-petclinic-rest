@@ -53,21 +53,13 @@ public class PetRestController {
 	@Inject
 	ClinicService clinicService;
 
-	@Inject
-	Validator validator;
-
     @RolesAllowed( Roles.OWNER_ADMIN )
     @POST
     @Path( "/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPet(@Valid Pet pet) { //, BindingResult bindingResult, UriComponentsBuilder ucBuilder){
-        Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
-        if (!errors.isEmpty() || (pet == null)) {
-            return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-        }
+    public Response addPet(@Valid Pet pet) {
         this.clinicService.savePet(pet);
-        // headers.setLocation(ucBuilder.path("/api/pets/{id}").buildAndExpand(pet.getId()).toUri()); //TODO
         return Response.status(Status.CREATED).entity(pet).build();
     }
 
@@ -109,10 +101,6 @@ public class PetRestController {
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updatePet(@PathParam("petId") int petId, @Valid Pet pet) { //, BindingResult bindingResult){
-		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
-		if (!errors.isEmpty() || (pet == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(pet).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
 		Pet currentPet = this.clinicService.findPetById(petId);
 		if(currentPet == null){
 			return Response.status(Status.NOT_FOUND).build();

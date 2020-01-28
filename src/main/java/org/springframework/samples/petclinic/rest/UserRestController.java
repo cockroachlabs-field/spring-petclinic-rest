@@ -50,12 +50,7 @@ public class UserRestController {
     @Path("/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addOwner( @Valid User user) throws Exception { // }, BindingResult bindingResult) throws Exception {
-		Set<ConstraintViolation<User>> errors = validator.validate(user);
-		if (!errors.isEmpty() || (user == null)) {
-			return Response.status(Status.BAD_REQUEST).entity(user).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).build();
-		}
-
+    public Response addOwner( @Valid User user) throws Exception {
         userService.saveUser(user);
         return Response.status(Status.CREATED).entity(user).build();
     }
