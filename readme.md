@@ -82,6 +82,9 @@
 2. Spring Data repositories
 3. JMX for the Audit ( Not available JMX on GraalVM )
 
+## Tests
+At the moment there's an issue and tests do not succeed.[WIP]
+
 ## Build
 ### JVM Interactive
 ```
