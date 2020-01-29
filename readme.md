@@ -86,6 +86,13 @@
 At the moment there's an issue and tests do not succeed.[WIP]
 
 ## Build
+Currently using the master ( 999-SNAPSHOT ) branch of Quarkus due to recent changes that could help on the test issue.  
+You need to clone Quarkus and build it locally  
+```
+$ git clone git@github.com:quarkusio/quarkus.git
+$ mvn clean install -DskipTests
+```
+( tests usually take > 30 minutes )
 ### JVM Interactive
 ```
 $ sdk use java 8.0.181-open  
