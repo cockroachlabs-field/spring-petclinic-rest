@@ -9,7 +9,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <quarkus.version>999-SNAPSHOT</quarkus.version>
+    <quarkus.version>1.6.1.Final</quarkus.version>
   </properties>
   <dependencyManagement>
     <dependencies>
