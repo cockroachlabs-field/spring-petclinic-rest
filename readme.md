@@ -71,6 +71,8 @@
 39. Added @Consumes to all resources PUT/POST
 40. replace resteasy-jsonb to resteasy-jackson 
 41. Added Metrics annotations to Services methods 
+42. Upgraded to Quarkus 1.7.0.Final
+43. Commented out wrong import.sql sentences
 
 ## TODO
 
@@ -106,9 +108,13 @@ $ java -jar ./target/spring-petclinic-rest-2.1.5-runner.jar
 ```  
 ### Graal
 ```
-$ sdk use java 19.2.1-grl  
-$ mvn clean package -Pnative  
-$ ./target/spring-petclinic-rest-2.1.5 -runner
+$ sdk install java 20.1.0.r11-grl
+$ sdk use java 20.1.0.r11-grl
+$ export GRAALVM_HOME=$HOME/.sdkman/candidates/java/20.1.0.r11-grl
+$ ${GRAALVM_HOME}/bin/gu install native-image
+$ mvn clean package -Pnative
+$ docker run --name petclinic -p 5432:5432 -e POSTGRES_PASSWORD=pass -d postgres
+$ ./target/spring-petclinic-rest-2.1.5-runner
 ```
 
 ### Docker
