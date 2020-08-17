@@ -124,4 +124,7 @@ $ docker build -f src/main/docker/Dockerfile.{type} -t quarkus/spring-petclinic-
 $ docker run -i --rm -p 8080:8080 quarkus/spring-petclinic-rest
 ```
 
+## Presentation Slides ( BarcelonaJUG, MadridJUG, DevNexus )
+https://es.slideshare.net/jonathanvila/migration-spring-boot-petclinic-rest-to-quarkus-120
+
 
