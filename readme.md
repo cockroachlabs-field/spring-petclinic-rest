@@ -161,16 +161,18 @@ File -> Import -> Maven -> Existing Maven project
 * Upgraded to 2.3.0 as it is required to build with GraalVM
 * Added javax.validation dependency as it no longer comes with SB
   * https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.3-Release-Notes#validation-starter-no-longer-included-in-web-starters
+* Official Doc on Native Image builder 
+  * https://spring.io/blog/2020/04/16/spring-tips-the-graalvm-native-image-builder-feature [Official]
 * Steps followed : [CodeCentric Blog](https://blog.codecentric.de/en/2020/05/spring-boot-graalvm/)
   * Preparing Spring Boot to be Graal Native Image-friendly
     1. Relocating Annotation classpath scanning from runtime to build time
-    1. Disabling usage of GCLIB proxies
-    1. Detecting autoconfiguration
-    1. Getting Spring Graal @AutomaticFeature
-    1. Setting start-class element in pom.xml
-    1. Preparing configuration variables for native-image command
-    1. Building the app, expanding the fat JAR & configuring the classpath
-    1. Crafting the native-image command
+    2. Disabling usage of GCLIB proxies
+    3. Detecting autoconfiguration
+    4. Getting Spring Graal @AutomaticFeature
+    5. Setting start-class element in pom.xml
+    6. Preparing configuration variables for native-image command
+    7. Building the app, expanding the fat JAR & configuring the classpath
+    8. Crafting the native-image command
 
 
 ## Publishing a Docker image
