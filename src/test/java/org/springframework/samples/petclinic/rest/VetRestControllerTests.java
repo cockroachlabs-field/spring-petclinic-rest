@@ -27,16 +27,15 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 /**
@@ -49,7 +48,7 @@ import io.restassured.http.ContentType;
 
 public class VetRestControllerTests {
 
-	@Mock
+	@InjectMock
     private ClinicService clinicService;
 
     private List<Vet> vets;
@@ -82,7 +81,7 @@ public class VetRestControllerTests {
     public void testGetVetSuccess() throws Exception {
     	given(this.clinicService.findVetById(1)).willReturn(vets.get(0));
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/vets/1")
 		.then()
@@ -96,7 +95,7 @@ public class VetRestControllerTests {
     public void testGetVetNotFound() throws Exception {
     	given(this.clinicService.findVetById(-1)).willReturn(null);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/vets/-1")
 		.then()
@@ -108,7 +107,7 @@ public class VetRestControllerTests {
     public void testGetAllVetsSuccess() throws Exception {
     	given(this.clinicService.findAllVets()).willReturn(vets);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/vets/")
 		.then()
@@ -125,7 +124,7 @@ public class VetRestControllerTests {
     	vets.clear();
     	given(this.clinicService.findAllVets()).willReturn(vets);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/vets/")
 		.then()
@@ -140,7 +139,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .post("/api/vets/")
 		.then()
@@ -157,7 +156,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .post("/api/vets/")
 		.then()
@@ -174,7 +173,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .put("/api/vets/1")
 		.then()
@@ -201,7 +200,7 @@ public class VetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .put("/api/vets/1")
 		.then()
@@ -217,7 +216,7 @@ public class VetRestControllerTests {
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given(this.clinicService.findVetById(1)).willReturn(vets.get(0));
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/vets/1")
 		.then()
@@ -233,7 +232,7 @@ public class VetRestControllerTests {
     	String newVetAsJSON = mapper.writeValueAsString(newVet);
     	given(this.clinicService.findVetById(-1)).willReturn(null);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/vets/-1")
 		.then()

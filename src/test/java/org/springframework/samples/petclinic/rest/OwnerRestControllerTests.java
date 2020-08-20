@@ -29,13 +29,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 
@@ -49,7 +49,7 @@ import io.restassured.http.ContentType;
 @QuarkusTestResource(H2DatabaseTestResource.class)
 public class OwnerRestControllerTests {
 
-    @Mock
+    @InjectMock
     private ClinicService clinicService;
 
     private List<Owner> owners;
@@ -101,7 +101,7 @@ public class OwnerRestControllerTests {
     public void testGetOwnerSuccess() throws Exception {
     	given(this.clinicService.findOwnerById(1)).willReturn(owners.get(0));
 		given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .get("/api/owners/1")
 		.then()
@@ -115,7 +115,7 @@ public class OwnerRestControllerTests {
     public void testGetOwnerNotFound() throws Exception {
     	given(this.clinicService.findOwnerById(-1)).willReturn(null);
         given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .get("/api/owners/-1")
 		.then()
@@ -129,7 +129,7 @@ public class OwnerRestControllerTests {
     	owners.remove(1);
     	given(this.clinicService.findOwnerByLastName("Davis")).willReturn(owners);
         given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .get("/api/owners/*/lastname/Davis")
 		.then()
@@ -146,7 +146,7 @@ public class OwnerRestControllerTests {
     	owners.clear();
     	given(this.clinicService.findOwnerByLastName("0")).willReturn(owners);
         given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .get("/api/owners/?lastName=0")
 		.then()
@@ -160,7 +160,7 @@ public class OwnerRestControllerTests {
     	owners.remove(1);
     	given(this.clinicService.findAllOwners()).willReturn(owners);
         given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 			.get("/api/owners/")
 		.then()
@@ -177,7 +177,7 @@ public class OwnerRestControllerTests {
     	owners.clear();
     	given(this.clinicService.findAllOwners()).willReturn(owners);
         given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		.get("/api/owners/")
 		.then()
@@ -192,7 +192,7 @@ public class OwnerRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .post("/api/owners/")
 		.then()
@@ -209,7 +209,7 @@ public class OwnerRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .post("/api/owners/")
 		.then()
@@ -226,7 +226,7 @@ public class OwnerRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .put("/api/owners/1")
 		.then()
@@ -235,7 +235,7 @@ public class OwnerRestControllerTests {
 			.statusCode(Status.NO_CONTENT.getStatusCode());
 
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .get("/api/owners/1")
 		.then()
@@ -253,7 +253,7 @@ public class OwnerRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .put("/api/owners/1")
 		.then()
@@ -269,7 +269,7 @@ public class OwnerRestControllerTests {
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given(this.clinicService.findOwnerById(1)).willReturn(owners.get(0));
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/owners/1")
 		.then()
@@ -285,7 +285,7 @@ public class OwnerRestControllerTests {
     	String newOwnerAsJSON = mapper.writeValueAsString(newOwner);
     	given(this.clinicService.findOwnerById(-1)).willReturn(null);
     	given()
-		  .auth().basic("owner_admin", "admin")
+		  .auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/owners/-1")
 		.then()

@@ -24,7 +24,6 @@ import javax.annotation.security.RolesAllowed;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -39,8 +38,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.springframework.samples.petclinic.model.Pet;
-import org.springframework.samples.petclinic.service.ClinicService;
 import org.springframework.samples.petclinic.security.Roles;
+import org.springframework.samples.petclinic.service.ClinicService;
 
 /**
  * @author Vitaliy Fedoriv
@@ -53,12 +52,19 @@ public class PetRestController {
 	@Inject
 	ClinicService clinicService;
 
+	@Inject
+	Validator validator;
+
     @RolesAllowed( Roles.OWNER_ADMIN )
     @POST
     @Path( "/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPet(@Valid Pet pet) {
+    public Response addPet(Pet pet) {
+		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
+		if (!errors.isEmpty() || (pet == null)) {
+			return Response.status(Status.BAD_REQUEST).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).entity(pet).build();
+		}
         this.clinicService.savePet(pet);
         return Response.status(Status.CREATED).entity(pet).build();
     }
@@ -100,7 +106,11 @@ public class PetRestController {
 	@Path("/{petId}")
 	@Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updatePet(@PathParam("petId") int petId, @Valid Pet pet) { //, BindingResult bindingResult){
+    public Response updatePet(@PathParam("petId") int petId, Pet pet) { //, BindingResult bindingResult){
+		Set<ConstraintViolation<Pet>> errors = validator.validate(pet);
+		if (!errors.isEmpty() || (pet == null)) {
+			return Response.status(Status.BAD_REQUEST).header("errors", errors.stream().collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage))).entity(pet).build();
+		}
 		Pet currentPet = this.clinicService.findPetById(petId);
 		if(currentPet == null){
 			return Response.status(Status.NOT_FOUND).build();

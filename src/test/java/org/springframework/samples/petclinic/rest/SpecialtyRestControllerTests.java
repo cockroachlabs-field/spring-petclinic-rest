@@ -27,16 +27,15 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Specialty;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 /**
@@ -49,7 +48,7 @@ import io.restassured.http.ContentType;
 
 public class SpecialtyRestControllerTests {
 
-	@Mock
+	@InjectMock
     private ClinicService clinicService;
 
     private List<Specialty> specialties;
@@ -79,7 +78,7 @@ public class SpecialtyRestControllerTests {
     public void testGetSpecialtySuccess() throws Exception {
     	given(this.clinicService.findSpecialtyById(1)).willReturn(specialties.get(0));
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/specialties/1")
 		.then()
@@ -94,7 +93,7 @@ public class SpecialtyRestControllerTests {
     public void testGetSpecialtyNotFound() throws Exception {
     	given(this.clinicService.findSpecialtyById(-1)).willReturn(null);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/specialties/-1")
 		  .then()
@@ -107,7 +106,7 @@ public class SpecialtyRestControllerTests {
     	specialties.remove(0);
     	given(this.clinicService.findAllSpecialties()).willReturn(specialties);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/specialties/")
 		.then()
@@ -125,7 +124,7 @@ public class SpecialtyRestControllerTests {
     	specialties.clear();
     	given(this.clinicService.findAllSpecialties()).willReturn(specialties);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/specialties/")
 		.then()
@@ -140,7 +139,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .post("/api/specialties/")
 		.then()
@@ -157,7 +156,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .post("/api/specialties/")
 		.then()
@@ -174,7 +173,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .put("/api/specialties/2")
 		.then()
@@ -183,7 +182,7 @@ public class SpecialtyRestControllerTests {
 			.statusCode(Status.NO_CONTENT.getStatusCode());
 
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/specialties/2")
 		.then()
@@ -200,7 +199,7 @@ public class SpecialtyRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .put("/api/specialties/1")
 		.then()
@@ -216,7 +215,7 @@ public class SpecialtyRestControllerTests {
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given(this.clinicService.findSpecialtyById(1)).willReturn(specialties.get(0));
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/specialties/1")
 		.then()
@@ -232,7 +231,7 @@ public class SpecialtyRestControllerTests {
     	String newSpecialtyAsJSON = mapper.writeValueAsString(newSpecialty);
     	given(this.clinicService.findSpecialtyById(-1)).willReturn(null);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .delete("/api/specialties/-1")
 		  .then()

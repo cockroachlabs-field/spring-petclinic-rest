@@ -30,10 +30,8 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -43,6 +41,7 @@ import org.springframework.samples.petclinic.service.ClinicService;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 /**
@@ -53,7 +52,7 @@ import io.restassured.http.ContentType;
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)
 public class VisitRestControllerTests {
-    @Mock
+    @InjectMock
     private ClinicService clinicService;
 
     private List<Visit> visits;

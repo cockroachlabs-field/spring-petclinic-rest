@@ -16,7 +16,7 @@
    1. postgresql
    1. cache-api
    1. ehcache
-   
+
 1. Quarkus
     1. smallrye-health
     1. smallrye-metrics
@@ -25,7 +25,8 @@
     1. quarkus test
     1. openapi
     1. h2
-    1. postgresql 
+    1. postgresql
+    2. quarkus cache
 
 
 ## Steps
@@ -73,10 +74,9 @@
 41. Added Metrics annotations to Services methods 
 42. Upgraded to Quarkus 1.7.0.Final
 43. Commented out wrong import.sql sentences
+44. Added Cache support
+45. Improved tests
 
-## TODO
-
-1. Cache
   
 ## NOT MIGRATED
 
@@ -85,16 +85,10 @@
 3. JMX for the Audit ( Not available JMX on GraalVM )
 
 ## Tests
-At the moment there's an issue and tests do not succeed.[WIP]
+[WIP] Some tests work, in the process of adapting the rest of the tests
 
-## Build
-Currently using the master ( 999-SNAPSHOT ) branch of Quarkus due to recent changes that could help on the test issue.  
-You need to clone Quarkus and build it locally  
-```
-$ git clone git@github.com:quarkusio/quarkus.git
-$ mvn clean install -DskipTests
-```
-( tests usually take > 30 minutes )
+
+
 ### JVM Interactive
 ```
 $ sdk use java 8.0.181-open  
@@ -103,8 +97,8 @@ $ mvn clean compile quarkus:dev
 ### JVM 
 ```
 $ sdk use java 8.0.181-open  
-$ mvn clean package -Dquarkus.package.uber-jar=true  
-$ java -jar ./target/spring-petclinic-rest-2.1.5-runner.jar
+$ mvn clean package   
+$ java -jar ./target/spring-petclinic-rest-2.2.5-runner.jar
 ```  
 ### Graal
 ```

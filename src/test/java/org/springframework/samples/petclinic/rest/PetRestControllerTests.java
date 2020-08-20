@@ -16,9 +16,9 @@
 
 package org.springframework.samples.petclinic.rest;
 
-import static org.mockito.BDDMockito.given;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,10 +29,8 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
@@ -41,6 +39,7 @@ import org.springframework.samples.petclinic.service.ClinicService;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 
@@ -58,7 +57,7 @@ public class PetRestControllerTests {
     @Inject
     PetRestController petRestController;
 
-    @Mock
+    @InjectMock
     protected ClinicService clinicService;
 
     private List<Pet> pets;
@@ -100,11 +99,11 @@ public class PetRestControllerTests {
     public void testGetPetSuccess() throws Exception {
     	given(this.clinicService.findPetById(3)).willReturn(pets.get(0));
 		given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 		  .get("/api/pets/3")
 		.then()
-			.contentType(ContentType.JSON)
+			//.contentType(ContentType.JSON)
 			.statusCode(Status.OK.getStatusCode())
             .body("id", equalTo(3))
             .body("name", equalTo("Rosy"));
@@ -114,7 +113,7 @@ public class PetRestControllerTests {
     public void testGetPetNotFound() throws Exception {
     	given(this.clinicService.findPetById(-1)).willReturn(null);
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.get("/api/pets/-1")
 		.then()
@@ -126,7 +125,7 @@ public class PetRestControllerTests {
     public void testGetAllPetsSuccess() throws Exception {
     	given(this.clinicService.findAllPets()).willReturn(pets);
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.get("/api/pets/")
 		.then()
@@ -143,7 +142,7 @@ public class PetRestControllerTests {
     	pets.clear();
     	given(this.clinicService.findAllPets()).willReturn(pets);
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.get("/api/pets/")
 		.then()
@@ -158,7 +157,9 @@ public class PetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
+			.contentType(ContentType.JSON)
+			.body(newPetAsJSON)
 		.when()
 			.post("/api/pets/")
 		.then()
@@ -175,7 +176,9 @@ public class PetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
+			.contentType(ContentType.JSON)
+			.body(newPetAsJSON)
 		.when()
 			.post("/api/pets/")
 		.then()
@@ -192,7 +195,9 @@ public class PetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
+			.contentType(ContentType.JSON)
+			.body(newPetAsJSON)
 		.when()
 			.put("/api/pets/3")
 		.then()
@@ -201,7 +206,7 @@ public class PetRestControllerTests {
         	.statusCode(Status.NO_CONTENT.getStatusCode());
 
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.get("/api/pets/3")
 		.then()
@@ -219,7 +224,9 @@ public class PetRestControllerTests {
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
+			.contentType(ContentType.JSON)
+			.body(newPetAsJSON)
 		.when()
 			.put("/api/pets/3")
 		.then()
@@ -235,7 +242,7 @@ public class PetRestControllerTests {
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given(this.clinicService.findPetById(3)).willReturn(pets.get(0));
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.delete("/api/pets/3")
 		.then()
@@ -251,7 +258,7 @@ public class PetRestControllerTests {
     	String newPetAsJSON = mapper.writeValueAsString(newPet);
     	given(this.clinicService.findPetById(-1)).willReturn(null);
     	given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
 			.delete("/api/pets/-1")
 		.then()

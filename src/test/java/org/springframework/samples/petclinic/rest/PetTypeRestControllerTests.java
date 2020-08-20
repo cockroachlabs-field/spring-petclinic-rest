@@ -28,16 +28,15 @@ import javax.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.samples.petclinic.model.PetType;
 import org.springframework.samples.petclinic.service.ClinicService;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.http.ContentType;
 
 
@@ -54,7 +53,7 @@ import io.restassured.http.ContentType;
     @Inject
     PetTypeRestController petTypeRestController;
 
-    @Mock
+    @InjectMock
     private ClinicService clinicService;
 
     private List<PetType> petTypes;
@@ -88,7 +87,7 @@ import io.restassured.http.ContentType;
     public void testGetPetTypeSuccessAsOwnerAdmin() throws Exception {
     	given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/1")
         .then()
@@ -102,7 +101,7 @@ import io.restassured.http.ContentType;
     public void testGetPetTypeSuccessAsVetAdmin() throws Exception {
         given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/1")
         .then()
@@ -116,7 +115,7 @@ import io.restassured.http.ContentType;
     public void testGetPetTypeNotFound() throws Exception {
     	given(this.clinicService.findPetTypeById(-1)).willReturn(null);
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/-1")
         .then()
@@ -130,7 +129,7 @@ import io.restassured.http.ContentType;
     	petTypes.remove(1);
     	given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
         given()
-			.auth().basic("owner_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/")
         .then()
@@ -148,7 +147,7 @@ import io.restassured.http.ContentType;
         petTypes.remove(1);
         given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/")
         .then()
@@ -165,7 +164,7 @@ import io.restassured.http.ContentType;
     	petTypes.clear();
     	given(this.clinicService.findAllPetTypes()).willReturn(petTypes);
         given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/")
         .then()
@@ -180,7 +179,7 @@ import io.restassured.http.ContentType;
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .post("/api/pettypes/")
         .then()
@@ -198,7 +197,7 @@ import io.restassured.http.ContentType;
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .post("/api/pettypes/")
         .then()
@@ -216,7 +215,7 @@ import io.restassured.http.ContentType;
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .put("/api/pettypes/2")
         .then()
@@ -226,7 +225,7 @@ import io.restassured.http.ContentType;
 
 
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .get("/api/pettypes/2")
         .then()
@@ -243,7 +242,7 @@ import io.restassured.http.ContentType;
     	ObjectMapper mapper = new ObjectMapper();
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .put("/api/pettypes/1")
         .then()
@@ -260,7 +259,7 @@ import io.restassured.http.ContentType;
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given(this.clinicService.findPetTypeById(1)).willReturn(petTypes.get(0));
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .delete("/api/pettypes/1")
         .then()
@@ -277,7 +276,7 @@ import io.restassured.http.ContentType;
     	String newPetTypeAsJSON = mapper.writeValueAsString(newPetType);
     	given(this.clinicService.findPetTypeById(-1)).willReturn(null);
     	given()
-			.auth().basic("vet_admin", "admin")
+			.auth().basic("admin", "admin")
 		.when()
           .delete("/api/pettypes/-1")
         .then()

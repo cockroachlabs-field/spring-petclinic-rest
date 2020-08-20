@@ -38,6 +38,8 @@ import org.springframework.samples.petclinic.repository.jpa.JpaSpecialtyReposito
 import org.springframework.samples.petclinic.repository.jpa.JpaVetRepository;
 import org.springframework.samples.petclinic.repository.jpa.JpaVisitRepository;
 
+import io.quarkus.cache.CacheResult;
+
 /**
  * Mostly used as a facade for all Petclinic controllers
  * Also a placeholder for @Transactional and @Cacheable annotations
@@ -332,7 +334,7 @@ public class ClinicServiceImpl implements ClinicService {
 
 	//@Override
 	@Transactional
-    //@Cacheable(value = "vets")
+    @CacheResult(cacheName = "vets")
         @Counted(name="accessDB",reusable = true)
     @Timed(name="processDB", unit= MetricUnits.MILLISECONDS, reusable = true)
 
