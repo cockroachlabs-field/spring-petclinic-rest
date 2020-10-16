@@ -87,38 +87,38 @@
 ## Tests
 [WIP] Some tests work, in the process of adapting the rest of the tests
 
-
-
-### JVM Interactive
+### JVM Interactive 
 ```
-$ sdk use java 8.0.181-open  
 $ mvn clean compile quarkus:dev
 ```  
+
 ### JVM 
+Install podman : https://podman.io/getting-started/installation
 ```
-$ sdk use java 8.0.181-open  
-$ mvn clean package   
-$ java -jar ./target/spring-petclinic-rest-2.2.5-runner.jar
+$ mvn clean package -DskipTests 
+$ podman run --name petclinic -p 5432:5432 -e POSTGRES_PASSWORD=pass -d postgres 
+$ java -jar ./target/spring-petclinic-rest-2.1.5-runner.jar
 ```  
+Currently tests are not 100% completed
+
 ### Graal
 ```
-$ sdk install java 20.1.0.r11-grl
-$ sdk use java 20.1.0.r11-grl
-$ export GRAALVM_HOME=$HOME/.sdkman/candidates/java/20.1.0.r11-grl
-$ ${GRAALVM_HOME}/bin/gu install native-image
-$ mvn clean package -Pnative
-$ docker run --name petclinic -p 5432:5432 -e POSTGRES_PASSWORD=pass -d postgres
+$ mvn clean package -DskipTests -Pnative -Dquarkus.native.container-build=true 
+$ podman run --name petclinic -p 5432:5432 -e POSTGRES_PASSWORD=pass -d postgres
 $ ./target/spring-petclinic-rest-2.1.5-runner
 ```
 
-### Docker
+### Container
 type = [jvm,native,uberjar] select depending on the previous mvn package you selected  
 ```
-$ docker build -f src/main/docker/Dockerfile.{type} -t quarkus/spring-petclinic-rest .  
-$ docker run -i --rm -p 8080:8080 quarkus/spring-petclinic-rest
+$ podman build -f src/main/docker/Dockerfile.{type} -t quarkus/spring-petclinic-rest .  
+$ podman run -i --rm -p 8080:8080 quarkus/spring-petclinic-rest
 ```
 
-## Presentation Slides ( BarcelonaJUG, MadridJUG, DevNexus )
-https://es.slideshare.net/jonathanvila/migration-spring-boot-petclinic-rest-to-quarkus-120
+## Presentation Slides ( BarcelonaJUG, MadridJUG, DevNexus, ... )
+Slides : bit.ly/sb2qks
 
+Article : https://dzone.com/articles/migrating-a-spring-boot-application-to-quarkus-cha
+
+Video : https://www.youtube.com/watch?v=BHuQ_9jATk0
 
