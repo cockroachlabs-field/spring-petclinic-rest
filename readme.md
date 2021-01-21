@@ -122,3 +122,6 @@ Article : https://dzone.com/articles/migrating-a-spring-boot-application-to-quar
 
 Video : https://www.youtube.com/watch?v=BHuQ_9jATk0
 
+## Cockroach
+
+podman run -ti -p 26257:26257 -p 8080:8080  -v "./cockroach-data:/cockroach/cockroach-data:Z" cockroachdb/cockroach:v20.2.3 start-single-node --insecure
